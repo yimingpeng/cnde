@@ -3,6 +3,7 @@ package br.upe.dsc.de.algorithm;
 public class Individual {
 	private double[] solution;
 	private int dimensions;
+	private double solutionFitness;
 	
 	public Individual(int dimensions) {
 		this.dimensions = dimensions;
@@ -13,7 +14,12 @@ public class Individual {
 		return solution;
 	}
 
-	public void setSolution(double[] solution) {
+	public void updateSolution(double[] solution, double solutionFitness) {
 		this.solution = solution;
+		this.solutionFitness = solutionFitness;
+	}
+	
+	public double getSolutionFitness() {
+		return this.solutionFitness;
 	}
 }
