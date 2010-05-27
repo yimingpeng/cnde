@@ -3,6 +3,7 @@ package br.upe.dsc.de.algorithm;
 import java.util.Random;
 
 import br.upe.dsc.de.problem.IProblem;
+import br.upe.dsc.de.view.PopulationObserver;
 import br.upe.dsc.de.algorithm.Statistics;
 
 /**
@@ -19,6 +20,7 @@ public class DifferentialEvolution {
 	private double bestSolutionFitness;
 	private double recombinationProbability;
 	private IProblem problem;
+	private PopulationObserver populationObserver;
 	
 	/**
 	 * Creates a new instance of this Differential Evolution implementation.
@@ -27,7 +29,7 @@ public class DifferentialEvolution {
 	 * @param problem The problem to be solved.
 	 */
 	public DifferentialEvolution(int populationSize, int maximumIterations, double standardDeviation, double scaleFactor,
-			double recombinationProbability, IProblem problem) {
+			double recombinationProbability, IProblem problem, PopulationObserver populationObserver) {
 		this.dimensions = problem.getDimensionsNumber();
 		this.populationSize = populationSize;
 		this.maximumIterations = maximumIterations;
@@ -35,6 +37,7 @@ public class DifferentialEvolution {
 		this.scaleFactor = scaleFactor;
 		this.recombinationProbability = recombinationProbability;
 		this.problem = problem;
+		this.populationObserver = populationObserver;
 		population = new Individual[populationSize];
 		allFitness = new double[populationSize];
 	}
@@ -55,6 +58,25 @@ public class DifferentialEvolution {
 		}
 		
 		System.out.println("Best solution: " + bestSolutionFitness);
+	}
+
+	/**
+	 * Returns the instance of PopulationObserver currently associated with this instance.
+	 * 
+	 * @return The instance of PopulationObserver currently associated with this instance.
+	 */
+	public PopulationObserver getPopulationObserver() {
+		return populationObserver;
+	}
+	
+	
+	/**
+	 * Returns the instance of Problem currently associated with this instance.
+	 * 
+	 * @return The instance of Problem currently associated with this instance.
+	 */
+	public IProblem getProblem() {
+		return problem;
 	}
 
 	// Initializes the algorithm
@@ -85,11 +107,18 @@ public class DifferentialEvolution {
 			recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
 			
 			if (problem.compareFitness(population[i].getSolutionFitness(), recombinationIndividualSolutionFitness)) {
-				population[i].updateSolution(recombinationIndividualSolution, recombinationIndividualSolutionFitness);
+				population[i].updateSolution(recombinationIndividualSolution.clone(), recombinationIndividualSolutionFitness);
 				allFitness[i] = recombinationIndividualSolutionFitness;
 				calculateBestSolution(population[i]);
 			}
 		}
+		
+		populationObserver.update(population);
+		
+		// Controls the velocity which the particles moves on the screen
+		try {
+			Thread.sleep(250);
+		} catch (InterruptedException e) { }
 	}
 	
 	// Performs the mutation phase of the algorithm creating the
