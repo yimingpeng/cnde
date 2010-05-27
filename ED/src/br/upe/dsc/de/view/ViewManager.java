@@ -1,8 +1,11 @@
 package br.upe.dsc.de.view;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
@@ -48,7 +51,8 @@ public class ViewManager {
 
 	/**
 	 * Runs in the graphics mode. It displays an window with a chart of the
-	 * problem being solved and shows the individuals moving on the screen.
+	 * problem being solved and shows the individuals moving on the screen. It
+	 * also saves an image of the chart immediately after it stops running.
 	 * 
 	 * @param populationSize
 	 *            Size of the population of individuals that will be created
@@ -112,5 +116,18 @@ public class ViewManager {
 		de.run();
 
 		chart.setRunning(false);
+
+		// Gets the last image of the chart
+		Image image = chart.getViewer().getImage();
+
+		// Creates a BufferdImage from the Image
+		BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null),
+			BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = bufferedImage.createGraphics();
+		g2.drawImage(image, null, null);
+		g2.dispose();
+
+		// Prints the image to a file
+		populationObserver.getFileManager().printImage(bufferedImage);
 	}
 }
