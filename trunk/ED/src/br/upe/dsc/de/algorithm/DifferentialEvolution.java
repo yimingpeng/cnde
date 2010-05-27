@@ -11,6 +11,7 @@ import br.upe.dsc.de.algorithm.Statistics;
 public class DifferentialEvolution {
 	private int dimensions;
 	private Individual[] population;
+	private int populationSize;
 	private int maximumIterations;
 	private double standardDeviation;
 	private double scaleFactor;
@@ -25,15 +26,17 @@ public class DifferentialEvolution {
 	 * @param dimensions Number of dimensions in the search space
 	 * @param problem The problem to be solved.
 	 */
-	public DifferentialEvolution(int dimensions, int maximumIterations, double standardDeviation, double scaleFactor,
+	public DifferentialEvolution(int populationSize, int maximumIterations, double standardDeviation, double scaleFactor,
 			double recombinationProbability, IProblem problem) {
-		this.dimensions = dimensions;
+		this.dimensions = problem.getDimensionsNumber();
+		this.populationSize = populationSize;
 		this.maximumIterations = maximumIterations;
 		this.standardDeviation = standardDeviation;
 		this.scaleFactor = scaleFactor;
 		this.recombinationProbability = recombinationProbability;
 		this.problem = problem;
-		population = new Individual[dimensions];
+		population = new Individual[populationSize];
+		allFitness = new double[populationSize];
 	}
 	
 	/**
@@ -53,13 +56,15 @@ public class DifferentialEvolution {
 		
 		System.out.println("Best solution: " + bestSolutionFitness);
 	}
-	
+
+	// Initializes the algorithm
 	private void init() {
 		double[] initialSolution;
-		for (int i = 0; i < dimensions; i++) {
+		for (int i = 0; i < populationSize; i++) {
 			population[i] = new Individual(dimensions);
 			initialSolution = getInitialSolution();
 			population[i].updateSolution(initialSolution, problem.getFitness(initialSolution));
+			allFitness[i] = population[i].getSolutionFitness();
 		}
 		
 		bestSolutionFitness = population[0].getSolutionFitness();
@@ -68,22 +73,27 @@ public class DifferentialEvolution {
 		}
 	}
 	
+	// Performs the iterations of the algorithm
 	private void iterate() {
 		Individual experimentalIndividual;
 		double[] recombinationIndividualSolution;
 		double recombinationIndividualSolutionFitness;
 		
-		for (int i = 0; i < dimensions; i++) {
+		for (int i = 0; i < populationSize; i++) {
 			experimentalIndividual = mutation(i);
 			recombinationIndividualSolution = crossover(population[i], experimentalIndividual);
 			recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
 			
 			if (problem.compareFitness(population[i].getSolutionFitness(), recombinationIndividualSolutionFitness)) {
 				population[i].updateSolution(recombinationIndividualSolution, recombinationIndividualSolutionFitness);
+				allFitness[i] = recombinationIndividualSolutionFitness;
+				calculateBestSolution(population[i]);
 			}
 		}
 	}
 	
+	// Performs the mutation phase of the algorithm creating the
+	// experimental vector.
 	private Individual mutation(int currentIndividualIndex) {
 		int targetIndividualIndex = getRandomIndex(currentIndividualIndex, -1, -1);
 		int individualAIndex = getRandomIndex(currentIndividualIndex, targetIndividualIndex, -1);
@@ -93,14 +103,19 @@ public class DifferentialEvolution {
 		double[] individualASolution = population[individualAIndex].getSolution();
 		double[] individualBSolution = population[individualBIndex].getSolution();
 		
+		double position;
+		
 		for (int i = 0; i < dimensions; i++) {
-			targetIndividualSolution[i] = targetIndividualSolution[i] + scaleFactor*(
+			position = targetIndividualSolution[i] + scaleFactor*(
 					individualASolution[i] - individualBSolution[i]);
+			targetIndividualSolution[i] = trimPositionToProblemLimits(position, i);
 		}
 		
 		return population[targetIndividualIndex];
 	}
-	
+
+	// Performs the crossover phase of the algorithm, in which occurs the recombination of
+	// the current individual with the experimental vector created during the mutation phase.
 	private double[] crossover(Individual currentIndividual, Individual experimentalIndividual) {
 		Random random = new Random(System.nanoTime());
 		double[] recombinationIndividualSolution = currentIndividual.getSolution().clone();
@@ -117,13 +132,15 @@ public class DifferentialEvolution {
 		return recombinationIndividualSolution;
 	}
 	
+	// Returns an random index between 0 and the number of dimensions of the current problem and that
+	// is different from the indexes received as parameters.
 	private int getRandomIndex(int currentIndividualIndex, int individualAIndex, int individualBIndex) {
 		Random random = new Random(System.nanoTime());
-		int randomIndex = random.nextInt(dimensions);
+		int randomIndex = random.nextInt(populationSize);
 		
 		while (randomIndex == currentIndividualIndex || randomIndex == individualAIndex ||
 				randomIndex == individualBIndex) {
-			randomIndex = random.nextInt(dimensions);
+			randomIndex = random.nextInt(populationSize);
 		}
 		
 		return randomIndex;
@@ -135,11 +152,23 @@ public class DifferentialEvolution {
 		}
 	}
 	
+	private double trimPositionToProblemLimits(double position, int dimension) {
+		double retorno = position;
+		
+		if (retorno > problem.getUpperLimit(dimension)) {
+			retorno = problem.getUpperLimit(dimension);
+		} else if (retorno < problem.getLowerLimit(dimension)) {
+			retorno = problem.getLowerLimit(dimension);
+		}
+		
+		return retorno;
+	}
+	
 	private double[] getInitialSolution() {
-		double[] position = new double[this.dimensions];
+		double[] position = new double[dimensions];
 		Random random = new Random(System.nanoTime());
 
-		for (int i = 0; i < this.dimensions; i++) {
+		for (int i = 0; i < dimensions; i++) {
 			double value = random.nextDouble();
 
 			position[i] = (this.problem.getUpperLimit(i) - this.problem
