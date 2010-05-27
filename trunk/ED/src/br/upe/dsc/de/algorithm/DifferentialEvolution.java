@@ -107,7 +107,8 @@ public class DifferentialEvolution {
 			recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
 			
 			if (problem.compareFitness(population[i].getSolutionFitness(), recombinationIndividualSolutionFitness)) {
-				population[i].updateSolution(recombinationIndividualSolution.clone(), recombinationIndividualSolutionFitness);
+				population[i].updateSolution(recombinationIndividualSolution.clone(),
+						recombinationIndividualSolutionFitness);
 				allFitness[i] = recombinationIndividualSolutionFitness;
 				calculateBestSolution(population[i]);
 			}
@@ -116,9 +117,9 @@ public class DifferentialEvolution {
 		populationObserver.update(population);
 		
 		// Controls the velocity which the particles moves on the screen
-		try {
-			Thread.sleep(250);
-		} catch (InterruptedException e) { }
+//		try {
+//			Thread.sleep(250);
+//		} catch (InterruptedException e) { }
 	}
 	
 	// Performs the mutation phase of the algorithm creating the
@@ -128,19 +129,22 @@ public class DifferentialEvolution {
 		int individualAIndex = getRandomIndex(currentIndividualIndex, targetIndividualIndex, -1);
 		int individualBIndex = getRandomIndex(currentIndividualIndex, targetIndividualIndex, individualAIndex);
 		
+		double[] experimentalSolution = new double[dimensions];
 		double[] targetIndividualSolution = population[targetIndividualIndex].getSolution();
 		double[] individualASolution = population[individualAIndex].getSolution();
 		double[] individualBSolution = population[individualBIndex].getSolution();
 		
+		Individual experimentalIndividual = new Individual(dimensions);
 		double position;
 		
 		for (int i = 0; i < dimensions; i++) {
 			position = targetIndividualSolution[i] + scaleFactor*(
 					individualASolution[i] - individualBSolution[i]);
-			targetIndividualSolution[i] = trimPositionToProblemLimits(position, i);
+			experimentalSolution[i] = trimPositionToProblemLimits(position, i);
 		}
+		experimentalIndividual.updateSolution(experimentalSolution, problem.getFitness(experimentalSolution));
 		
-		return population[targetIndividualIndex];
+		return experimentalIndividual;
 	}
 
 	// Performs the crossover phase of the algorithm, in which occurs the recombination of

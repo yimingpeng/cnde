@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import ChartDirector.ChartViewer;
 import br.upe.dsc.de.algorithm.DifferentialEvolution;
 import br.upe.dsc.de.problem.IProblem;
+import br.upe.dsc.de.problem.Problem6;
 import br.upe.dsc.de.problem.RandomPeaksProblem;
 import br.upe.dsc.de.util.FileManager;
 import br.upe.dsc.de.view.ChartView;
@@ -24,13 +25,13 @@ public class Main {
 		PopulationObserver observer = new PopulationObserver(populationSize, fileManager);
 		DifferentialEvolution de;
 		
-//		for (int i = 0; i < 30; i++) {
-//			observer.resetIteration();
+		for (int i = 0; i < 30; i++) {
+			observer.resetIteration();
 			de = new DifferentialEvolution(populationSize, 100, 0.01, 2, 0.6, problem, observer);
-//			runSimple(de);
-//		}
+			runSimple(de);
+		}
 		
-		runChart(de);
+//		runChart(de);
 	}
 
 	private static void runSimple(DifferentialEvolution de) {
