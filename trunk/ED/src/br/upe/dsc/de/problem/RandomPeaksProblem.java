@@ -1,27 +1,45 @@
 package br.upe.dsc.de.problem;
 
 public class RandomPeaksProblem implements IProblem {
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getName() {
 		return "Random Peaks";
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getDimensionsNumber() {
         return 2;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public double getLowerLimit(int dimension) {
 	        return 0;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public double getUpperLimit(int dimension) {
 	        return 30;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean compareFitness(double pBestFitness, double currentPositionFitness) {
 	        return currentPositionFitness > pBestFitness;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public double getFitness(double... dimension) {
 		Double x = dimension[0];
 		Double y = dimension[1];
