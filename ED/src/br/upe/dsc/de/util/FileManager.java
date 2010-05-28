@@ -26,17 +26,16 @@ public class FileManager {
 		createFile();
 	}
 
-	public void printFileHeader(String psoType, int swarmSize, int maxIterations, double standardDeviation, double C1,
-		double C2) {
+	public void printFileHeader(int populationSize, int maximumIterations, double standardDeviation,
+		double scaleFactor, double recombinationProbability) {
 
 		try {
 			file.write("Problem: " + problemName + "\n");
-			file.write("PSO type: " + psoType + "\n");
-			file.write("Swarm size: " + swarmSize + "\n");
-			file.write("Maximum iterations: " + maxIterations + "\n");
+			file.write("Population size: " + populationSize + "\n");
+			file.write("Maximum iterations: " + maximumIterations + "\n");
 			file.write("Standard deviation: " + standardDeviation + "\n");
-			file.write("C1: " + C1 + "\n");
-			file.write("C2: " + C2 + "\n");
+			file.write("Scale factor: " + scaleFactor + "\n");
+			file.write("Recombination probability: " + recombinationProbability + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

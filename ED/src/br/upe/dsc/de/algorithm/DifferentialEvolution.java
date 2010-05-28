@@ -105,6 +105,9 @@ public class DifferentialEvolution {
 
 	// Initializes the algorithm
 	private void init() {
+		populationObserver.getFileManager().printFileHeader(populationSize, maximumIterations, standardDeviation,
+			scaleFactor, recombinationProbability);
+
 		double[] initialSolution;
 		for (int i = 0; i < populationSize; i++) {
 			population[i] = new Individual(dimensions);
