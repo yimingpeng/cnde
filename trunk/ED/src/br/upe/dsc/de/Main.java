@@ -17,11 +17,11 @@ public class Main {
 		IProblem problem = new RandomPeaksProblem();
 		PopulationObserver observer = new PopulationObserver(populationSize, new FileManager(problem.getName()));
 
-		ViewManager.runText(populationSize, maximumIterations, standardDeviation, scaleFactor,
-			recombinationProbability, problem, observer);
-
-		// ViewManager.runChart(populationSize, maximumIterations,
+		// ViewManager.runText(populationSize, maximumIterations,
 		// standardDeviation, scaleFactor,
 		// recombinationProbability, problem, observer);
+
+		ViewManager.runChart(populationSize, maximumIterations, standardDeviation, scaleFactor,
+			recombinationProbability, problem, observer);
 	}
 }
