@@ -34,7 +34,7 @@ public class ChartView implements Runnable {
 	 * Name of the chart.
 	 */
 	public String toString() {
-		return "PSO";
+		return "Differential Evolution";
 	}
 
 	/**
