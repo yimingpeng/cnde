@@ -95,7 +95,7 @@ public class LayoutProblem implements IProblem {
 	 * {@inheritDoc}
 	 */
 	public boolean compareFitness(double pBestFitness, double currentPositionFitness) {
-		return currentPositionFitness > pBestFitness;
+		return currentPositionFitness < pBestFitness;
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class LayoutProblem implements IProblem {
 		for (int i = 0; i < qtyMachines; i++) {
 			x = variables[ ((i*3)+0) ];
 			y = variables[ ((i*3)+1) ];
-			System.out.println(((i*3)+2) +" - "+ variables.length);
+			//System.out.println(((i*3)+2) +" - "+ variables.length);
 			p = variables[ ((i*3)+2) ];
 			pos = this.convertPosition(p);
 			machine1 = machines.get(i);

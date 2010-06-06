@@ -12,8 +12,8 @@ public class Main {
 		int populationSize = 100;
 		int maximumIterations = 100;
 		double standardDeviation = 0.01;
-		double scaleFactor = 2;
-		double recombinationProbability = 0.6;
+		double scaleFactor = 0.5;
+		double recombinationProbability = 0.7;
 		IProblem problem = new LayoutProblem();
 		PopulationObserver observer = new PopulationObserver(populationSize, new FileManager(problem.getName()));
 

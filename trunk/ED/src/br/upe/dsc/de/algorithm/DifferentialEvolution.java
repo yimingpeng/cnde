@@ -73,8 +73,6 @@ public class DifferentialEvolution {
 	 */
 	public void run() {
 		init();
-		//System.out.println("Tudo pronto...");
-		//System.exit(0);
 		double currentStandardDeviation;
 		for (int i = 0; i < maximumIterations; i++) {
 			iterate();
@@ -82,6 +80,11 @@ public class DifferentialEvolution {
 			currentStandardDeviation = Statistics.getStandardDeviation(allFitness);
 			if (currentStandardDeviation < standardDeviation) {
 				break;
+			}
+			
+			if ((i % 5) == 0) {
+				chartLayout.createChart(bestSolution);
+				System.out.println("Iteração "+ i +" - BestFitness: "+ bestSolutionFitness);
 			}
 		}
 
@@ -158,14 +161,16 @@ public class DifferentialEvolution {
 		populationObserver.update(population);
 
 		// Controls the velocity which the particles moves on the screen
+		/*
 		try {
 			if (delayExecution) {
 				chartLayout.createChart(bestSolution);
-				Thread.sleep(250);
+				Thread.sleep(150);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		*/
 	}
 
 	// Performs the mutation phase of the algorithm creating the
