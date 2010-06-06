@@ -57,7 +57,7 @@ public class LayoutProblem implements IProblem {
 		leftBounds = new double[dimensions];
 		rightBounds = new double[dimensions];
 		for (int i = 0; i < dimensions; i++) {
-			double[] dimMax = new double[]{200,200,1};
+			double[] dimMax = new double[]{120,80,1};
 			leftBounds[i] = 0;
 			rightBounds[i] = dimMax[ (i % 3) ];
 		}
@@ -111,15 +111,14 @@ public class LayoutProblem implements IProblem {
 		for (int i = 0; i < qtyMachines; i++) {
 			x = variables[ ((i*3)+0) ];
 			y = variables[ ((i*3)+1) ];
-			//System.out.println(((i*3)+2) +" - "+ variables.length);
 			p = variables[ ((i*3)+2) ];
-			pos = this.convertPosition(p);
+			pos = convertPosition(p);
 			machine1 = machines.get(i);
 			machine1.updatePosition(x, y, pos);
 		}
 		
 		double x1, x2, y1, y2, w, h;
-		int s, e;
+		int posSaida, posEntrada;
 		for (LayoutLink machineLink : machinesLinks) {
 			x1 = 0.0;
 			x2 = 0.0;
@@ -129,10 +128,12 @@ public class LayoutProblem implements IProblem {
 			machine2 = machines.get(machineLink.getDestIndex());
 			
 			// Get the current position of the machines
-			s = (machine1.getPosition() + machineLink.getSourceSide()) % 4;
-			e = (machine2.getPosition() + machineLink.getDestSide()) % 4;
+			posSaida = (machine1.getPosition() + machineLink.getSourceSide()) % 4;
+			posEntrada = (machine2.getPosition() + machineLink.getDestSide()) % 4;
 			
-			switch (s) {
+			System.out.println(posSaida +" - "+ posEntrada);
+			
+			switch (posSaida) {
 				case LayoutMachine.TOP :
 					x1 = (machine1.getX2() - machine1.getX1()) / 2.0;
 					y1 = machine1.getX1();
@@ -150,7 +151,7 @@ public class LayoutProblem implements IProblem {
 					y1 = (machine1.getY2() - machine1.getY1()) / 2.0;
 					break;
 			}
-			switch (e) {
+			switch (posEntrada) {
 				case LayoutMachine.TOP :
 					x2 = (machine2.getX2() - machine2.getX1()) / 2.0;
 					y2 = machine2.getX1();
@@ -170,7 +171,7 @@ public class LayoutProblem implements IProblem {
 			}
 			w = Math.abs(x2 - x1);
 			h = Math.abs(y2 - y1);
-			result = Math.sqrt((w*w) + (h*h));
+			result += Math.sqrt((w*w) + (h*h));
 		}
 		return result;
 	}
@@ -225,5 +226,9 @@ public class LayoutProblem implements IProblem {
 	
 	public LayoutMachine getMachine(int index) {
 		return machines.get(index);
+	}
+	
+	public ArrayList<LayoutLink> getLinks() {
+		return machinesLinks;
 	}
 }

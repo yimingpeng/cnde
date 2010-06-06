@@ -8,8 +8,10 @@ import java.awt.RenderingHints;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 import br.upe.dsc.de.problem.IProblem;
+import br.upe.dsc.de.problem.LayoutLink;
 import br.upe.dsc.de.problem.LayoutMachine;
 import br.upe.dsc.de.problem.LayoutProblem;
 
@@ -75,7 +77,7 @@ class GCanvas extends Canvas {
 
 		double x, y, p;
 		int pos;
-		LayoutMachine machine;
+		LayoutMachine machine1, machine2;
 
 		// Updating the position of all machines
 		for (int i = 0; i < 7; i++) {
@@ -83,15 +85,74 @@ class GCanvas extends Canvas {
 			y = solution[((i * 3) + 1)];
 			p = solution[((i * 3) + 2)];
 			pos = convertPosition(p);
-			machine = ((LayoutProblem) problem).getMachine(i);
-			machine.updatePosition(x, y, pos);
+			machine1 = ((LayoutProblem) problem).getMachine(i);
+			machine1.updatePosition(x, y, pos);
 			
 			drawRectangle(g2D,
-					(float) ((machine.getX1() * scale) + xx),
-					(float) ((machine.getY1() * scale) + yy),
-					(float) ((machine.getX2() - machine.getX1()) * scale) + xx,
-					(float) ((machine.getY2() - machine.getY1()) * scale) + yy
+					(float) ((machine1.getX1() * scale) + xx),
+					(float) ((machine1.getY1() * scale) + yy),
+					(float) ((machine1.getX2() - machine1.getX1()) * scale) + xx,
+					(float) ((machine1.getY2() - machine1.getY1()) * scale) + yy
 			);
+		}
+		
+		// Creating the links
+		int posSaida, posEntrada;
+		ArrayList<LayoutLink> machineLinks = ((LayoutProblem) problem).getLinks();
+		for (LayoutLink machineLink : machineLinks) {
+			x1 = 0.0;
+			x2 = 0.0;
+			y1 = 0.0;
+			y2 = 0.0;
+			machine1 = ((LayoutProblem) problem).getMachine(machineLink.getSourceIndex());
+			machine2 = ((LayoutProblem) problem).getMachine(machineLink.getDestIndex());
+			
+			// Get the current position of the machines
+			posSaida = (machine1.getPosition() + machineLink.getSourceSide()) % 4;
+			posEntrada = (machine2.getPosition() + machineLink.getDestSide()) % 4;
+			
+			switch (posSaida) {
+				case LayoutMachine.TOP :
+					x1 = (machine1.getX2() - machine1.getX1()) / 2.0;
+					y1 = machine1.getX1();
+					break;
+				case LayoutMachine.BOTTOM :
+					x1 = (machine1.getX2() - machine1.getX1()) / 2.0;
+					y1 = machine1.getX2();
+					break;
+				case LayoutMachine.LEFT :
+					x1 = machine1.getX2();
+					y1 = (machine1.getY2() - machine1.getY1()) / 2.0;
+					break;
+				case LayoutMachine.RIGHT :
+					x1 = machine1.getX1();
+					y1 = (machine1.getY2() - machine1.getY1()) / 2.0;
+					break;
+			}
+			switch (posEntrada) {
+				case LayoutMachine.TOP :
+					x2 = (machine2.getX2() - machine2.getX1()) / 2.0;
+					y2 = machine2.getX1();
+					break;
+				case LayoutMachine.BOTTOM :
+					x2 = (machine2.getX2() - machine2.getX1()) / 2.0;
+					y2 = machine2.getX2();
+					break;
+				case LayoutMachine.LEFT :
+					x2 = machine2.getX2();
+					y2 = (machine2.getY2() - machine2.getY1()) / 2.0;
+					break;
+				case LayoutMachine.RIGHT :
+					x2 = machine2.getX1();
+					y2 = (machine2.getY2() - machine2.getY1()) / 2.0;
+					break;
+			}
+			g2D.drawLine(
+					(int) (x1 * scale) + xx,
+					(int) (y1 * scale) + yy,
+					(int) (x2 * scale) + xx,
+					(int) (y2 * scale) + yy
+				);
 		}
 	}
 
