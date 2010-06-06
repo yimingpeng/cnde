@@ -78,7 +78,7 @@ public class ViewManager {
 
 		DifferentialEvolution de = new DifferentialEvolution(populationSize, maximumIterations, standardDeviation,
 			scaleFactor, recombinationProbability, problem, populationObserver, true);
-		ChartView chart;
+		ChartLayout chart;
 
 		// Create and set up the main window
 		JFrame frame = new JFrame("PSO");
@@ -99,8 +99,9 @@ public class ViewManager {
 		}
 
 		// Instantiate an instance of this chart
-		chart = new ChartView(frame, de.getProblem(), de.getPopulationObserver(), dataX, dataY);
-
+		//chart = new ChartView(frame, de.getProblem(), de.getPopulationObserver(), dataX, dataY);
+		chart = new ChartLayout(frame, de.getProblem(), de.getPopulationObserver(), dataX, dataY);
+		
 		// Create the chart and put them in the content pane
 		chart.setViewer(new ChartViewer());
 		chart.createChart();

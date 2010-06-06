@@ -57,7 +57,7 @@ public class LayoutProblem implements IProblem {
 		leftBounds = new double[dimensions];
 		rightBounds = new double[dimensions];
 		for (int i = 0; i < dimensions; i++) {
-			double[] dimMax = new double[]{60,40,1};
+			double[] dimMax = new double[]{100,80,1};
 			leftBounds[i] = 0;
 			rightBounds[i] = dimMax[ (i % 3) ];
 		}
@@ -111,6 +111,7 @@ public class LayoutProblem implements IProblem {
 		for (int i = 0; i < qtyMachines; i++) {
 			x = variables[ ((i*3)+0) ];
 			y = variables[ ((i*3)+1) ];
+			System.out.println(((i*3)+2) +" - "+ variables.length);
 			p = variables[ ((i*3)+2) ];
 			pos = this.convertPosition(p);
 			machine1 = machines.get(i);
