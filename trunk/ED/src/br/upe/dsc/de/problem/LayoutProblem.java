@@ -57,7 +57,7 @@ public class LayoutProblem implements IProblem {
 		leftBounds = new double[dimensions];
 		rightBounds = new double[dimensions];
 		for (int i = 0; i < dimensions; i++) {
-			double[] dimMax = new double[]{800,600,1};
+			double[] dimMax = new double[]{200,200,1};
 			leftBounds[i] = 0;
 			rightBounds[i] = dimMax[ (i % 3) ];
 		}
