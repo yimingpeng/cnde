@@ -52,7 +52,7 @@ public class ChartLayout extends JFrame implements Runnable {
 	public void createChart(double[] solution) {
 		canvas.setSolution(solution.clone());
 		// this.paint(getGraphics());
-		this.repaint();
+		//this.repaint();
 		// this.repaint();
 		// Output the chart
 		// Image image = createChartImage();

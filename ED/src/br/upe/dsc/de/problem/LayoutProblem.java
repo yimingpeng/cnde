@@ -39,7 +39,7 @@ public class LayoutProblem implements IProblem {
 		machines.add(new LayoutMachine("B3", 8, 8));   // B3
 		machines.add(new LayoutMachine("C1", 8, 8));   // C1
 		machines.add(new LayoutMachine("C2", 8, 8));   // C2
-		machines.add(new LayoutMachine("C2", 16, 8));  // D1
+		machines.add(new LayoutMachine("D1", 8, 16));  // D1
 		
 		// Creating links
 		machinesLinks = new ArrayList<LayoutLink>();
@@ -131,41 +131,39 @@ public class LayoutProblem implements IProblem {
 			posSaida = (machine1.getPosition() + machineLink.getSourceSide()) % 4;
 			posEntrada = (machine2.getPosition() + machineLink.getDestSide()) % 4;
 			
-			System.out.println(posSaida +" - "+ posEntrada);
-			
 			switch (posSaida) {
 				case LayoutMachine.TOP :
 					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
-					y1 = machine1.getX1();
+					y1 = machine1.getY1();
 					break;
 				case LayoutMachine.BOTTOM :
 					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
-					y1 = machine1.getX2();
+					y1 = machine1.getY2();
 					break;
 				case LayoutMachine.LEFT :
-					x1 = machine1.getX2();
+					x1 = machine1.getX1();
 					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
 					break;
 				case LayoutMachine.RIGHT :
-					x1 = machine1.getX1();
+					x1 = machine1.getX2();
 					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
 					break;
 			}
 			switch (posEntrada) {
 				case LayoutMachine.TOP :
 					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
-					y2 = machine2.getX1();
+					y2 = machine2.getY1();
 					break;
 				case LayoutMachine.BOTTOM :
 					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
-					y2 = machine2.getX2();
+					y2 = machine2.getY2();
 					break;
 				case LayoutMachine.LEFT :
-					x2 = machine2.getX2();
+					x2 = machine2.getX1();
 					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 				case LayoutMachine.RIGHT :
-					x2 = machine2.getX1();
+					x2 = machine2.getX2();
 					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 			}
