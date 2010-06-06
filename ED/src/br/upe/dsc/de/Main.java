@@ -1,6 +1,7 @@
 package br.upe.dsc.de;
 
 import br.upe.dsc.de.problem.IProblem;
+import br.upe.dsc.de.problem.LayoutProblem;
 import br.upe.dsc.de.problem.RandomPeaksProblem;
 import br.upe.dsc.de.util.FileManager;
 import br.upe.dsc.de.view.PopulationObserver;
@@ -14,7 +15,7 @@ public class Main {
 		double standardDeviation = 0.01;
 		double scaleFactor = 2;
 		double recombinationProbability = 0.6;
-		IProblem problem = new RandomPeaksProblem();
+		IProblem problem = new LayoutProblem();
 		PopulationObserver observer = new PopulationObserver(populationSize, new FileManager(problem.getName()));
 
 		// ViewManager.runText(populationSize, maximumIterations,

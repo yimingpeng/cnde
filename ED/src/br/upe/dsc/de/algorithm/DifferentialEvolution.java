@@ -70,6 +70,7 @@ public class DifferentialEvolution {
 	 */
 	public void run() {
 		init();
+		System.exit(0);
 		double currentStandardDeviation;
 		for (int i = 0; i < maximumIterations; i++) {
 			iterate();
@@ -234,15 +235,18 @@ public class DifferentialEvolution {
 		double[] position = new double[dimensions];
 		Random random = new Random(System.nanoTime());
 
-		for (int i = 0; i < dimensions; i++) {
-			double value = random.nextDouble();
-
-			position[i] = (this.problem.getUpperLimit(i) - this.problem.getLowerLimit(i)) * value
-				+ this.problem.getLowerLimit(i);
-
-			position[i] = (position[i] <= this.problem.getUpperLimit(i)) ? position[i] : this.problem.getUpperLimit(i);
-			position[i] = (position[i] >= this.problem.getLowerLimit(i)) ? position[i] : this.problem.getLowerLimit(i);
-		}
+		do {
+			System.out.println("Inicial...");
+			for (int i = 0; i < dimensions; i++) {
+				double value = random.nextDouble();
+	
+				position[i] = (this.problem.getUpperLimit(i) - this.problem.getLowerLimit(i)) * value
+					+ this.problem.getLowerLimit(i);
+	
+				position[i] = (position[i] <= this.problem.getUpperLimit(i)) ? position[i] : this.problem.getUpperLimit(i);
+				position[i] = (position[i] >= this.problem.getLowerLimit(i)) ? position[i] : this.problem.getLowerLimit(i);
+			}
+		} while (!this.problem.verifyConstraints(position));
 
 		return position;
 	}
