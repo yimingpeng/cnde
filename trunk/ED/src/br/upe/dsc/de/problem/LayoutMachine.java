@@ -17,6 +17,10 @@ public class LayoutMachine {
 		this.height = height;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	public double getWidth() {
 		return width;
 	}
