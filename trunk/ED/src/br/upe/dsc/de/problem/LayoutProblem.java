@@ -33,7 +33,7 @@ public class LayoutProblem implements IProblem {
 		
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 16, 24)); // A1
+		machines.add(new LayoutMachine("A1", 8, 24)); // A1
 		machines.add(new LayoutMachine("B1", 8, 8));   // B1
 		machines.add(new LayoutMachine("B2", 8, 8));   // B2
 		machines.add(new LayoutMachine("B3", 8, 8));   // B3
