@@ -201,13 +201,11 @@ public class LayoutProblem implements IProblem {
 		// Verify if exists a machine under other machine
 		for (int i = 0; i < qtyMachines; i++) {
 			machine1 = machines.get(i);
-			for (int j = 0; j < qtyMachines; j++) {
+			for (int j = (i + 1); j < qtyMachines; j++) {
 				machine2 = machines.get(j);
-				if (machine1 != machine2) {
-					if (!((machine1.getX1() > machine2.getX2() || machine1.getX2() < machine2.getX1()) &&
-						(machine1.getY1() > machine2.getY2() || machine1.getY2() < machine2.getY1()))) {
-						return false;
-					}
+				if (!(machine1.getX1() > machine2.getX2() || machine1.getX2() < machine2.getX1() ||
+					machine1.getY1() > machine2.getY2() || machine1.getY2() < machine2.getY1())) {
+					return false;
 				}
 			}
 		}
