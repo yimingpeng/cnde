@@ -3,7 +3,6 @@ package br.upe.dsc.de.algorithm;
 import java.util.Random;
 
 import br.upe.dsc.de.problem.IProblem;
-import br.upe.dsc.de.problem.LayoutProblem;
 import br.upe.dsc.de.view.ChartLayout;
 import br.upe.dsc.de.view.PopulationObserver;
 
@@ -19,6 +18,7 @@ public class DifferentialEvolution {
 	private double scaleFactor;
 	private double[] allFitness;
 	private double bestSolutionFitness;
+	private double[] bestSolution;
 	private double recombinationProbability;
 	private IProblem problem;
 	private PopulationObserver populationObserver;
@@ -73,7 +73,8 @@ public class DifferentialEvolution {
 	 */
 	public void run() {
 		init();
-		System.exit(0);
+		//System.out.println("Tudo pronto...");
+		//System.exit(0);
 		double currentStandardDeviation;
 		for (int i = 0; i < maximumIterations; i++) {
 			iterate();
@@ -159,6 +160,7 @@ public class DifferentialEvolution {
 		// Controls the velocity which the particles moves on the screen
 		try {
 			if (delayExecution) {
+				chartLayout.createChart(bestSolution);
 				Thread.sleep(250);
 			}
 		} catch (InterruptedException e) {
@@ -228,6 +230,7 @@ public class DifferentialEvolution {
 	private void calculateBestSolution(Individual individual) {
 		if (problem.compareFitness(bestSolutionFitness, individual.getSolutionFitness())) {
 			bestSolutionFitness = individual.getSolutionFitness();
+			bestSolution = individual.getSolution().clone();
 		}
 	}
 
@@ -260,18 +263,6 @@ public class DifferentialEvolution {
 				}
 				if (position[i] < leftBound) {
 					position[i] = leftBound;
-				}
-			}
-			
-			if (chartLayout != null) {
-				chartLayout.createChart(position);
-				// Controls the velocity which the particles moves on the screen
-				try {
-					if (delayExecution) {
-						Thread.sleep(250);
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
 			}
 		} while (!problem.verifyConstraints(position));
