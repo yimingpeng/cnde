@@ -67,8 +67,6 @@ class GCanvas extends Canvas {
 		xx = (int) Math.round(margin / 2.0);
 		yy = (int) Math.round(margin / 2.0);
 
-		System.out.println(width + " - " + height);
-
 		g2D.setColor(Color.WHITE);
 		g2D.fillRect(xx, yy, width, height);
 
@@ -89,8 +87,8 @@ class GCanvas extends Canvas {
 			machine.updatePosition(x, y, pos);
 			
 			drawRectangle(g2D,
-					(float) (machine.getX1() + xx),
-					(float) (machine.getY1() + yy),
+					(float) ((machine.getX1() * scale) + xx),
+					(float) ((machine.getY1() * scale) + yy),
 					(float) ((machine.getX2() - machine.getX1()) * scale) + xx,
 					(float) ((machine.getY2() - machine.getY1()) * scale) + yy
 			);
