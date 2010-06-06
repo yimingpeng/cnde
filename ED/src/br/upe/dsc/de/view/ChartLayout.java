@@ -1,42 +1,42 @@
 package br.upe.dsc.de.view;
 
-import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.Container;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
 import ChartDirector.ChartViewer;
 import br.upe.dsc.de.problem.IProblem;
 
-public class ChartLayout extends Canvas implements Runnable {
+public class ChartLayout extends JFrame implements Runnable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private PopulationObserver populationObserver;
 	private ChartViewer viewer;
 	private boolean running;
-	private JFrame frame;
-	private double[] dataX;
-	private double[] dataY;
-	private IProblem problem;
-	
-	public ChartLayout(JFrame frame, IProblem problem, PopulationObserver populationObserver, double[] dataX, double[] dataY) {
-		this.frame = frame;
-		this.populationObserver = populationObserver;
-		this.dataX = dataX;
-		this.dataY = dataY;
-		this.problem = problem;
+	private GCanvas canvas;
+
+	public ChartLayout(IProblem problem) {
+		super(problem.getName());
+
+		setBounds(50, 50, 800, 600);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Container con = this.getContentPane();
+		con.setBackground(Color.white);
+		canvas = new GCanvas();
+		con.add(canvas);
+		setVisible(true);
+
 	}
-	
+
 	/**
 	 * Name of the chart.
 	 */
 	public String toString() {
 		return "Differential Evolution";
 	}
-	
+
 	/**
 	 * Number of charts produced
 	 */
@@ -45,62 +45,26 @@ public class ChartLayout extends Canvas implements Runnable {
 	}
 
 	public Image createChartImage() {
-		double x1, x2, y1, y2, w, h, scale;
-		int x, y, width, height, widthMax, heightMax, margin;
-		Image mImage;
-		x1 = problem.getLowerLimit(0);
-		x2 = problem.getUpperLimit(0);
-		y1 = problem.getLowerLimit(1);
-		y2 = problem.getUpperLimit(1);
-		w = Math.abs(x2 - x1);
-		h = Math.abs(y2 - y1);
-		
-		
-		// Calculating the positions and sizes
-		widthMax = 800;
-		heightMax = 600;
-		margin = 20; // = 20px
-		
-		System.out.println(w +" - "+ h);
-		// Resizing the image
-		width = (widthMax - margin);
-		height = (int) Math.round((width * (heightMax - margin)) / width);
-		if (height > (heightMax - margin)) {
-			height = (heightMax - margin);
-			width = (int) Math.round((height * (widthMax - margin)) / height);
-		}
-		scale = width / w;
-		x = (int) Math.round(margin / 2.0);
-		y = (int) Math.round(margin / 2.0);
-		
-		mImage = createImage(width + margin, height + margin);
-		//BufferedImage bufferedImage = new BufferedImage(mImage.getWidth(null), mImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
-		//Graphics2D g2 = (Graphics2D) bufferedImage.getGraphics();
-		Graphics2D g2 = (Graphics2D) mImage.getGraphics();
-		g2.setColor(Color.WHITE);
-		g2.fillRect(0, 0, width, height);
-		
-		g2.setColor(Color.LIGHT_GRAY);
-		g2.fillRect(x, y, (int) Math.ceil(w * scale), (int) Math.ceil(h * scale));
-		
-		return mImage;
+		return null;
 	}
-	
-	// Main code for creating charts
-	public void createChart() {
 
+	// Main code for creating charts
+	public void createChart(double[] solution) {
+		canvas.setSolution(solution);
+		// this.paint(getGraphics());
+		this.repaint();
+		// this.repaint();
 		// Output the chart
-		Image image = createChartImage();
-		viewer.setImage(image);
+		// Image image = createChartImage();
+		// viewer.setImage(image);
 	}
-	
+
 	@Override
 	public void run() {
 		while (running) {
-			createChart();
-			if (frame != null) {
-				frame.repaint();
-			}
+			// createChart();
+			// this.paint(getGraphics());
+			this.repaint();
 			try {
 				Thread.sleep(250);
 			} catch (InterruptedException e) {
@@ -108,7 +72,7 @@ public class ChartLayout extends Canvas implements Runnable {
 			}
 		}
 	}
-	
+
 	public PopulationObserver getSwarmObserver() {
 		return populationObserver;
 	}
@@ -131,13 +95,5 @@ public class ChartLayout extends Canvas implements Runnable {
 
 	public void setRunning(boolean running) {
 		this.running = running;
-	}
-
-	public JFrame getFrame() {
-		return frame;
-	}
-
-	public void setFrame(JFrame frame) {
-		this.frame = frame;
 	}
 }

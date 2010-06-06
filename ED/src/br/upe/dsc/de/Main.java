@@ -2,7 +2,6 @@ package br.upe.dsc.de;
 
 import br.upe.dsc.de.problem.IProblem;
 import br.upe.dsc.de.problem.LayoutProblem;
-import br.upe.dsc.de.problem.RandomPeaksProblem;
 import br.upe.dsc.de.util.FileManager;
 import br.upe.dsc.de.view.PopulationObserver;
 import br.upe.dsc.de.view.ViewManager;
@@ -22,7 +21,13 @@ public class Main {
 		// standardDeviation, scaleFactor,
 		// recombinationProbability, problem, observer);
 
-		ViewManager.runChart(populationSize, maximumIterations, standardDeviation, scaleFactor,
+		// ViewManager.runChart(populationSize, maximumIterations,
+		// standardDeviation, scaleFactor,
+		// recombinationProbability, problem, observer);
+
+		// new ChartLayout(null);
+
+		ViewManager.runChartLayout(populationSize, maximumIterations, standardDeviation, scaleFactor,
 			recombinationProbability, problem, observer);
 	}
 }

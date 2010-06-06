@@ -3,6 +3,7 @@ package br.upe.dsc.de.algorithm;
 import java.util.Random;
 
 import br.upe.dsc.de.problem.IProblem;
+import br.upe.dsc.de.view.ChartLayout;
 import br.upe.dsc.de.view.PopulationObserver;
 
 /**
@@ -21,6 +22,7 @@ public class DifferentialEvolution {
 	private IProblem problem;
 	private PopulationObserver populationObserver;
 	private boolean delayExecution;
+	private ChartLayout chartLayout;
 
 	/**
 	 * Creates a new instance of this Differential Evolution implementation.
@@ -109,18 +111,22 @@ public class DifferentialEvolution {
 		populationObserver.getFileManager().printFileHeader(populationSize, maximumIterations, standardDeviation,
 			scaleFactor, recombinationProbability);
 
-		double[] initialSolution;
 		for (int i = 0; i < populationSize; i++) {
-			population[i] = new Individual(dimensions);
-			initialSolution = getInitialSolution();
-			population[i].updateSolution(initialSolution, problem.getFitness(initialSolution));
-			allFitness[i] = population[i].getSolutionFitness();
+			createIndividual(i);
 		}
 
 		bestSolutionFitness = population[0].getSolutionFitness();
 		for (Individual individual : population) {
 			calculateBestSolution(individual);
 		}
+	}
+
+	private void createIndividual(int i) {
+		double[] initialSolution;
+		population[i] = new Individual(dimensions);
+		initialSolution = getInitialSolution();
+		population[i].updateSolution(initialSolution, problem.getFitness(initialSolution));
+		allFitness[i] = population[i].getSolutionFitness();
 	}
 
 	// Performs the iterations of the algorithm
@@ -134,7 +140,12 @@ public class DifferentialEvolution {
 			recombinationIndividualSolution = crossover(population[i], experimentalIndividual);
 			recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
 
-			if (problem.compareFitness(population[i].getSolutionFitness(), recombinationIndividualSolutionFitness)) {
+			// If the individual created in the crossover operation breaks some
+			// constraint, we are going to create a new individual.
+			if (!problem.verifyConstraints(recombinationIndividualSolution)) {
+				createIndividual(i);
+			} else if (problem.compareFitness(population[i].getSolutionFitness(),
+				recombinationIndividualSolutionFitness)) {
 				population[i].updateSolution(recombinationIndividualSolution.clone(),
 					recombinationIndividualSolutionFitness);
 				allFitness[i] = recombinationIndividualSolutionFitness;
@@ -239,16 +250,36 @@ public class DifferentialEvolution {
 		do {
 			for (int i = 0; i < dimensions; i++) {
 				double value = random.nextDouble();
-	
+
 				position[i] = (this.problem.getUpperLimit(i) - this.problem.getLowerLimit(i)) * value
 					+ this.problem.getLowerLimit(i);
-	
-				position[i] = (position[i] <= this.problem.getUpperLimit(i)) ? position[i] : this.problem.getUpperLimit(i);
-				position[i] = (position[i] >= this.problem.getLowerLimit(i)) ? position[i] : this.problem.getLowerLimit(i);
+
+				position[i] = (position[i] <= this.problem.getUpperLimit(i)) ? position[i] : this.problem
+					.getUpperLimit(i);
+				position[i] = (position[i] >= this.problem.getLowerLimit(i)) ? position[i] : this.problem
+					.getLowerLimit(i);
 			}
+
+			if (chartLayout != null) {
+				chartLayout.createChart(position);
+
+				// Controls the velocity which the particles moves on the screen
+				try {
+					if (delayExecution) {
+						Thread.sleep(250);
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
 		} while (!this.problem.verifyConstraints(position));
 		System.out.println("Solução OK!");
-		
+
 		return position;
+	}
+
+	public void setChartLayout(ChartLayout chartLayout) {
+		this.chartLayout = chartLayout;
 	}
 }
