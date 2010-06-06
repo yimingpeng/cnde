@@ -51,7 +51,8 @@ public class ChartView implements Runnable {
 			for (int xIndex = 0; xIndex < dataX.length; ++xIndex) {
 				double x = dataX[xIndex];
 
-				dataZ[yIndex * (dataX.length) + xIndex] = problem.getFitness(new double[] { x, y });
+				//dataZ[yIndex * (dataX.length) + xIndex] = problem.getFitness(new double[] { x, y });
+				dataZ[yIndex * (dataX.length) + xIndex] = 0;
 			}
 		}
 

@@ -235,8 +235,8 @@ public class DifferentialEvolution {
 		double[] position = new double[dimensions];
 		Random random = new Random(System.nanoTime());
 
+		System.out.println("Criando Solução...");
 		do {
-			System.out.println("Inicial...");
 			for (int i = 0; i < dimensions; i++) {
 				double value = random.nextDouble();
 	
@@ -247,7 +247,8 @@ public class DifferentialEvolution {
 				position[i] = (position[i] >= this.problem.getLowerLimit(i)) ? position[i] : this.problem.getLowerLimit(i);
 			}
 		} while (!this.problem.verifyConstraints(position));
-
+		System.out.println("Solução OK!");
+		
 		return position;
 	}
 }
