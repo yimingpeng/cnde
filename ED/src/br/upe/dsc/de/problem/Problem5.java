@@ -52,4 +52,8 @@ public class Problem5 implements IProblem {
     public double getFitness(double... dimension) {
             return 21.5 + dimension[0] * Math.sin(4 * Math.PI * dimension[0]) + dimension[1] * Math.sin(20 * Math.PI * dimension[1]);
     }
+    
+	public boolean verifyConstraints(double... variables) {
+		return true;
+	}
 }

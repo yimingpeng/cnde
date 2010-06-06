@@ -47,4 +47,8 @@ public class Problem1 implements IProblem {
             }
             return result;
     }
+    
+	public boolean verifyConstraints(double... variables) {
+		return true;
+	}
 }

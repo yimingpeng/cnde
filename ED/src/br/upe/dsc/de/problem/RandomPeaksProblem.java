@@ -55,4 +55,8 @@ public class RandomPeaksProblem implements IProblem {
 			* Math.exp(-0.5 * ((x - 25) * (x - 25) + (y - 16) * (y - 16))) + 2
 			* Math.exp(-0.5 * ((x - 5) * (x - 5) + (y - 14) * (y - 14)));
 	}
+	
+	public boolean verifyConstraints(double... variables) {
+		return true;
+	}
 }
