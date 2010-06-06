@@ -52,16 +52,16 @@ class GCanvas extends Canvas {
 		h = Math.abs(y2 - y1);
 
 		// Calculating the positions and sizes
-		widthMax = 800;
-		heightMax = 600;
+		widthMax = getWidth();
+		heightMax = getHeight();
 		margin = 20; // = 20px
-
+		
 		// Resizing the image
 		width = (widthMax - margin);
-		height = (int) Math.round((width * (heightMax - margin)) / width);
+		height = (int) Math.round((h * (widthMax - margin)) / w);
 		if (height > (heightMax - margin)) {
 			height = (heightMax - margin);
-			width = (int) Math.round((height * (widthMax - margin)) / height);
+			width = (int) Math.round((w * (heightMax - margin)) / h);
 		}
 		scale = width / w;
 		xx = (int) Math.round(margin / 2.0);
@@ -87,9 +87,13 @@ class GCanvas extends Canvas {
 			pos = convertPosition(p);
 			machine = ((LayoutProblem) problem).getMachine(i);
 			machine.updatePosition(x, y, pos);
-
-			drawRectangle(g2D, (float) machine.getX1(), (float) machine.getY1(), (float) machine.getWidth(),
-				(float) machine.getHeight());
+			
+			drawRectangle(g2D,
+					(float) (machine.getX1() + xx),
+					(float) (machine.getY1() + yy),
+					(float) ((machine.getX2() - machine.getX1()) * scale) + xx,
+					(float) ((machine.getY2() - machine.getY1()) * scale) + yy
+			);
 		}
 	}
 
