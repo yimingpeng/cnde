@@ -3,6 +3,7 @@ package br.upe.dsc.de.algorithm;
 import java.util.Random;
 
 import br.upe.dsc.de.problem.IProblem;
+import br.upe.dsc.de.problem.LayoutProblem;
 import br.upe.dsc.de.view.ChartLayout;
 import br.upe.dsc.de.view.PopulationObserver;
 
@@ -124,7 +125,7 @@ public class DifferentialEvolution {
 	private void createIndividual(int i) {
 		double[] initialSolution;
 		population[i] = new Individual(dimensions);
-		initialSolution = getInitialSolution();
+		initialSolution = getRandomSolution();
 		population[i].updateSolution(initialSolution, problem.getFitness(initialSolution));
 		allFitness[i] = population[i].getSolutionFitness();
 	}
@@ -242,28 +243,28 @@ public class DifferentialEvolution {
 		return retorno;
 	}
 
-	private double[] getInitialSolution() {
+	private double[] getRandomSolution() {
 		double[] position = new double[dimensions];
 		Random random = new Random(System.nanoTime());
 		
-		System.out.println("Criando Solução...");
 		do {
 			for (int i = 0; i < dimensions; i++) {
-				double value = random.nextDouble();
-				value = problem.getLowerLimit(i) + (problem.getUpperLimit(i) - problem.getLowerLimit(i)) * value;
+				double rightBound, leftBound, value = random.nextDouble();
+				rightBound = problem.getUpperLimit(i);
+				leftBound = problem.getLowerLimit(i);
 				
+				value = leftBound + (rightBound - leftBound) * value;
 				position[i] = value;
-				if (position[i] > problem.getUpperLimit(i)) {
-					position[i] = problem.getUpperLimit(i);
+				if (position[i] > rightBound) {
+					position[i] = rightBound;
 				}
-				if (position[i] < problem.getLowerLimit(i)) {
-					position[i] = problem.getLowerLimit(i);
+				if (position[i] < leftBound) {
+					position[i] = leftBound;
 				}
 			}
-
+			
 			if (chartLayout != null) {
 				chartLayout.createChart(position);
-
 				// Controls the velocity which the particles moves on the screen
 				try {
 					if (delayExecution) {
@@ -274,7 +275,6 @@ public class DifferentialEvolution {
 				}
 			}
 		} while (!problem.verifyConstraints(position));
-		System.out.println("Solução OK!");
 		return position;
 	}
 
