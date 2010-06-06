@@ -1,10 +1,10 @@
 package br.upe.dsc.de.problem;
 
 public class LayoutMachine {
-	static final int TOP = 0;
-	static final int LEFT = 1;
-	static final int BOTTOM = 2;
-	static final int RIGHT = 3;
+	public static final int TOP = 0;
+	public static final int LEFT = 1;
+	public static final int BOTTOM = 2;
+	public static final int RIGHT = 3;
 	
 	String name;
 	double width, height;
