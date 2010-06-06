@@ -245,21 +245,21 @@ public class DifferentialEvolution {
 	private double[] getInitialSolution() {
 		double[] position = new double[dimensions];
 		Random random = new Random(System.nanoTime());
-
+		
 		System.out.println("Criando Solução...");
 		do {
 			for (int i = 0; i < dimensions; i++) {
 				double value = random.nextDouble();
-
-				position[i] = (this.problem.getUpperLimit(i) - this.problem.getLowerLimit(i)) * value
-					+ this.problem.getLowerLimit(i);
-
-				position[i] = (position[i] <= this.problem.getUpperLimit(i)) ? position[i] : this.problem
-					.getUpperLimit(i);
-				position[i] = (position[i] >= this.problem.getLowerLimit(i)) ? position[i] : this.problem
-					.getLowerLimit(i);
+				
+				position[i] = problem.getLowerLimit(i) + (problem.getUpperLimit(i) - problem.getLowerLimit(i)) * value;
+				if (position[i] > problem.getUpperLimit(i)) {
+					position[i] = problem.getUpperLimit(i);
+				}
+				if (position[i] < problem.getLowerLimit(i)) {
+					position[i] = problem.getLowerLimit(i);
+				}
 			}
-
+			
 			if (chartLayout != null) {
 				chartLayout.createChart(position);
 
@@ -272,10 +272,8 @@ public class DifferentialEvolution {
 					e.printStackTrace();
 				}
 			}
-
-		} while (!this.problem.verifyConstraints(position));
+		} while (!problem.verifyConstraints(position));
 		System.out.println("Solução OK!");
-
 		return position;
 	}
 

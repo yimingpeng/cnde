@@ -220,4 +220,12 @@ public class LayoutProblem implements IProblem {
 		if (position <= 0.75) return 2;
 		return 3;
 	}
+	
+	public ArrayList<LayoutMachine> getMachines() {
+		return machines;
+	}
+	
+	public LayoutMachine getMachine(int index) {
+		return machines.get(index);
+	}
 }

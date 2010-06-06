@@ -24,7 +24,7 @@ public class ChartLayout extends JFrame implements Runnable {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container con = this.getContentPane();
 		con.setBackground(Color.white);
-		canvas = new GCanvas();
+		canvas = new GCanvas(problem);
 		con.add(canvas);
 		setVisible(true);
 
@@ -64,7 +64,7 @@ public class ChartLayout extends JFrame implements Runnable {
 		while (running) {
 			// createChart();
 			// this.paint(getGraphics());
-			this.repaint();
+			canvas.repaint();
 			try {
 				Thread.sleep(250);
 			} catch (InterruptedException e) {

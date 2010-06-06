@@ -144,7 +144,7 @@ public class ViewManager {
 
 		// Runs the algorithm
 		chart.setRunning(true);
-		// new Thread(chart).start();
+		new Thread(chart).start();
 		de.run();
 
 		chart.setRunning(false);
