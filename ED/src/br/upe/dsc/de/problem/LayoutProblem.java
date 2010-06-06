@@ -135,38 +135,38 @@ public class LayoutProblem implements IProblem {
 			
 			switch (posSaida) {
 				case LayoutMachine.TOP :
-					x1 = (machine1.getX2() - machine1.getX1()) / 2.0;
+					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
 					y1 = machine1.getX1();
 					break;
 				case LayoutMachine.BOTTOM :
-					x1 = (machine1.getX2() - machine1.getX1()) / 2.0;
+					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
 					y1 = machine1.getX2();
 					break;
 				case LayoutMachine.LEFT :
 					x1 = machine1.getX2();
-					y1 = (machine1.getY2() - machine1.getY1()) / 2.0;
+					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
 					break;
 				case LayoutMachine.RIGHT :
 					x1 = machine1.getX1();
-					y1 = (machine1.getY2() - machine1.getY1()) / 2.0;
+					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
 					break;
 			}
 			switch (posEntrada) {
 				case LayoutMachine.TOP :
-					x2 = (machine2.getX2() - machine2.getX1()) / 2.0;
+					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
 					y2 = machine2.getX1();
 					break;
 				case LayoutMachine.BOTTOM :
-					x2 = (machine2.getX2() - machine2.getX1()) / 2.0;
+					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
 					y2 = machine2.getX2();
 					break;
 				case LayoutMachine.LEFT :
 					x2 = machine2.getX2();
-					y2 = (machine2.getY2() - machine2.getY1()) / 2.0;
+					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 				case LayoutMachine.RIGHT :
 					x2 = machine2.getX1();
-					y2 = (machine2.getY2() - machine2.getY1()) / 2.0;
+					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 			}
 			w = Math.abs(x2 - x1);

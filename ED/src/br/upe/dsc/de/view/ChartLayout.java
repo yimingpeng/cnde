@@ -50,7 +50,7 @@ public class ChartLayout extends JFrame implements Runnable {
 
 	// Main code for creating charts
 	public void createChart(double[] solution) {
-		canvas.setSolution(solution);
+		canvas.setSolution(solution.clone());
 		// this.paint(getGraphics());
 		this.repaint();
 		// this.repaint();

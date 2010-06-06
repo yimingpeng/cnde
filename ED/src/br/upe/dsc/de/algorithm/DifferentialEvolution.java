@@ -85,6 +85,7 @@ public class DifferentialEvolution {
 			if ((i % 10) == 0) {
 				chartLayout.createChart(bestSolution);
 				System.out.println("Iteração "+ i +" - BestFitness: "+ bestSolutionFitness);
+				break;
 			}
 		}
 

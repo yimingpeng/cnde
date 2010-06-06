@@ -32,6 +32,7 @@ class GCanvas extends Canvas {
 
 	public void setSolution(double[] solution) {
 		this.solution = solution;
+		repaint();
 	}
 
 	public void paint(Graphics g) {
@@ -89,11 +90,19 @@ class GCanvas extends Canvas {
 			machine1.updatePosition(x, y, pos);
 			
 			drawRectangle(g2D,
-					(float) ((machine1.getX1() * scale) + xx),
-					(float) ((machine1.getY1() * scale) + yy),
-					(float) ((machine1.getX2() - machine1.getX1()) * scale) + xx,
-					(float) ((machine1.getY2() - machine1.getY1()) * scale) + yy
+					(float) Math.round(((machine1.getX1() * scale) + xx)),
+					(float) Math.round(((machine1.getY1() * scale) + yy)),
+					(float) Math.round(((machine1.getX2() - machine1.getX1()) * scale)),
+					(float) Math.round(((machine1.getY2() - machine1.getY1()) * scale))
 			);
+			g2D.drawString(machine1.getName(), Math.round(((((machine1.getX2() - machine1.getX1())/2.0) + machine1.getX1()) * scale) + xx - 5), Math.round(((((machine1.getY2() - machine1.getY1())/2.0) + machine1.getY1()) * scale) + yy + 10));
+			if (machine1.getName() == "A1") {
+				System.out.println("A1: "+
+				Math.round(((machine1.getX1() * scale) + xx)) +" - "+
+				Math.round(((machine1.getY1() * scale) + yy)) +" - "+
+				Math.round(((machine1.getX2() - machine1.getX1()) * scale)) +" - "+
+				Math.round(((machine1.getY2() - machine1.getY1()) * scale)));
+			}
 		}
 		
 		// Creating the links
@@ -111,48 +120,61 @@ class GCanvas extends Canvas {
 			posSaida = (machine1.getPosition() + machineLink.getSourceSide()) % 4;
 			posEntrada = (machine2.getPosition() + machineLink.getDestSide()) % 4;
 			
+			System.out.println(machine1.getPosition() +" - "+ machineLink.getSourceSide() +" - "+ posSaida);
+			System.out.println("Scale: "+ scale);
 			switch (posSaida) {
 				case LayoutMachine.TOP :
-					x1 = (machine1.getX2() - machine1.getX1()) / 2.0;
+					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
 					y1 = machine1.getX1();
+					System.out.println("TOP");
 					break;
 				case LayoutMachine.BOTTOM :
-					x1 = (machine1.getX2() - machine1.getX1()) / 2.0;
+					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
 					y1 = machine1.getX2();
+					System.out.println("BOTTOM");
 					break;
 				case LayoutMachine.LEFT :
 					x1 = machine1.getX2();
-					y1 = (machine1.getY2() - machine1.getY1()) / 2.0;
+					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
+					System.out.println("LEFT");
+					System.out.println(machine1.getX1() +" - "+ machine1.getX2() +" - "+ machine1.getY1() +" - "+ machine1.getY2());
+					System.out.println(x1 +" - "+ y1);
 					break;
 				case LayoutMachine.RIGHT :
 					x1 = machine1.getX1();
-					y1 = (machine1.getY2() - machine1.getY1()) / 2.0;
+					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
+					System.out.println("RIGHT");
 					break;
 			}
 			switch (posEntrada) {
 				case LayoutMachine.TOP :
-					x2 = (machine2.getX2() - machine2.getX1()) / 2.0;
+					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
 					y2 = machine2.getX1();
 					break;
 				case LayoutMachine.BOTTOM :
-					x2 = (machine2.getX2() - machine2.getX1()) / 2.0;
+					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
 					y2 = machine2.getX2();
 					break;
 				case LayoutMachine.LEFT :
 					x2 = machine2.getX2();
-					y2 = (machine2.getY2() - machine2.getY1()) / 2.0;
+					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 				case LayoutMachine.RIGHT :
 					x2 = machine2.getX1();
-					y2 = (machine2.getY2() - machine2.getY1()) / 2.0;
+					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 			}
 			g2D.drawLine(
-					(int) (x1 * scale) + xx,
-					(int) (y1 * scale) + yy,
-					(int) (x2 * scale) + xx,
-					(int) (y2 * scale) + yy
+					(int) Math.round((x1 * scale) + xx),
+					(int) Math.round((y1 * scale) + yy),
+					/*
+					(int) Math.round((x2 * scale) + xx),
+					(int) Math.round((y2 * scale) + yy)
+					*/
+					0,
+					0
 				);
+			break;
 		}
 	}
 
