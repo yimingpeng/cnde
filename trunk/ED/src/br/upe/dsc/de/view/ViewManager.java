@@ -41,7 +41,7 @@ public class ViewManager {
 		double recombinationProbability, IProblem problem, PopulationObserver populationObserver) {
 
 		DifferentialEvolution de;
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 1; i++) {
 			populationObserver.resetIteration();
 			de = new DifferentialEvolution(populationSize, maximumIterations, standardDeviation, scaleFactor,
 				recombinationProbability, problem, populationObserver, false);
@@ -99,12 +99,13 @@ public class ViewManager {
 		}
 
 		// Instantiate an instance of this chart
-		//chart = new ChartView(frame, de.getProblem(), de.getPopulationObserver(), dataX, dataY);
-		chart = new ChartLayout(frame, de.getProblem(), de.getPopulationObserver(), dataX, dataY);
-		
+		// chart = new ChartView(frame, de.getProblem(),
+		// de.getPopulationObserver(), dataX, dataY);
+		chart = new ChartLayout(de.getProblem());
+
 		// Create the chart and put them in the content pane
 		chart.setViewer(new ChartViewer());
-		chart.createChart();
+		// chart.createChart();
 		frame.getContentPane().add(chart.getViewer());
 
 		// Display the window
@@ -113,7 +114,7 @@ public class ViewManager {
 
 		// Runs the algorithm
 		chart.setRunning(true);
-		new Thread(chart).start();
+		// new Thread(chart).start();
 		de.run();
 
 		chart.setRunning(false);
@@ -130,5 +131,22 @@ public class ViewManager {
 
 		// Prints the image to a file
 		populationObserver.getFileManager().printImage(bufferedImage);
+	}
+
+	public static void runChartLayout(int populationSize, int maximumIterations, double standardDeviation,
+		double scaleFactor, double recombinationProbability, IProblem problem, PopulationObserver populationObserver) {
+
+		ChartLayout chart = new ChartLayout(problem);
+		DifferentialEvolution de = new DifferentialEvolution(populationSize, maximumIterations, standardDeviation,
+			scaleFactor, recombinationProbability, problem, populationObserver, true);
+
+		de.setChartLayout(chart);
+
+		// Runs the algorithm
+		chart.setRunning(true);
+		// new Thread(chart).start();
+		de.run();
+
+		chart.setRunning(false);
 	}
 }
