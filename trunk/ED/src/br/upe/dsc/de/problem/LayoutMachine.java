@@ -25,14 +25,6 @@ public class LayoutMachine {
 		return height;
 	}
 	
-	public double getWidth(double scale) {
-		return width * scale;
-	}
-	
-	public double getHeight(double scale) {
-		return height * scale;
-	}
-	
 	public double getX1() {
 		return x1;
 	}
