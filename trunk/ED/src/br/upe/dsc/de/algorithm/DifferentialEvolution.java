@@ -82,10 +82,15 @@ public class DifferentialEvolution {
 				break;
 			}
 			
-			if ((i % 10) == 0) {
-				chartLayout.createChart(bestSolution);
+			chartLayout.createChart(bestSolution);
+			
+			if ((i % 50) == 0) {
 				System.out.println("Iteração "+ i +" - BestFitness: "+ bestSolutionFitness);
-				break;
+				/*
+				for (int j = 0; j < dimensions; j++) {
+					System.out.println("Solucao["+ j +"] = "+ bestSolution[j]);
+				}
+				*/
 			}
 		}
 
@@ -144,18 +149,21 @@ public class DifferentialEvolution {
 		for (int i = 0; i < populationSize; i++) {
 			experimentalIndividual = mutation(i);
 			recombinationIndividualSolution = crossover(population[i], experimentalIndividual);
-			recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
 
 			// If the individual created in the crossover operation breaks some
 			// constraint, we are going to create a new individual.
 			if (!problem.verifyConstraints(recombinationIndividualSolution)) {
 				createIndividual(i);
-			} else if (problem.compareFitness(population[i].getSolutionFitness(),
-				recombinationIndividualSolutionFitness)) {
-				population[i].updateSolution(recombinationIndividualSolution.clone(),
-					recombinationIndividualSolutionFitness);
-				allFitness[i] = recombinationIndividualSolutionFitness;
-				calculateBestSolution(population[i]);
+			}
+			else {
+				recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
+				if (problem.compareFitness(population[i].getSolutionFitness(),
+						recombinationIndividualSolutionFitness)) {
+					population[i].updateSolution(recombinationIndividualSolution.clone(),
+						recombinationIndividualSolutionFitness);
+					allFitness[i] = recombinationIndividualSolutionFitness;
+					calculateBestSolution(population[i]);
+				}
 			}
 		}
 

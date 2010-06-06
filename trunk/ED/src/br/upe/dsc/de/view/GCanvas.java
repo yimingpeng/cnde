@@ -13,17 +13,38 @@ import java.util.ArrayList;
 import br.upe.dsc.de.problem.IProblem;
 import br.upe.dsc.de.problem.LayoutLink;
 import br.upe.dsc.de.problem.LayoutMachine;
-import br.upe.dsc.de.problem.LayoutProblem;
 
 class GCanvas extends Canvas {
 	private static final long serialVersionUID = 1L;
 	private double[] solution;
-	// private ArrayList<LayoutMachine> machines;
+	private ArrayList<LayoutMachine> machines;
+	ArrayList<LayoutLink> machinesLinks;
 	private IProblem problem;
 
 	public GCanvas(IProblem problem) {
 		this.problem = problem;
-		// machines = ((LayoutProblem) problem).getMachines();
+		// Creating machines
+		machines = new ArrayList<LayoutMachine>();
+		machines.add(new LayoutMachine("A1", 8, 24)); // A1
+		machines.add(new LayoutMachine("B1", 8, 8));   // B1
+		machines.add(new LayoutMachine("B2", 8, 8));   // B2
+		machines.add(new LayoutMachine("B3", 8, 8));   // B3
+		machines.add(new LayoutMachine("C1", 8, 8));   // C1
+		machines.add(new LayoutMachine("C2", 8, 8));   // C2
+		machines.add(new LayoutMachine("D1", 8, 16));  // D1
+		
+		// Creating links
+		machinesLinks = new ArrayList<LayoutLink>();
+		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 1, LayoutMachine.LEFT)); // A1->B1
+		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 2, LayoutMachine.LEFT)); // A1->B2
+		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // A1->B3
+		machinesLinks.add(new LayoutLink(1, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // B1->C1
+		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // B2->C1
+		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // B2->C2
+		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // B3->C2
+		machinesLinks.add(new LayoutLink(4, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C1->D1
+		machinesLinks.add(new LayoutLink(5, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C2->D1
+		
 		solution = new double[problem.getDimensionsNumber()];
 		for (int i = 0; i < solution.length; i++) {
 			solution[i] = 0.0;
@@ -32,11 +53,11 @@ class GCanvas extends Canvas {
 
 	public void setSolution(double[] solution) {
 		this.solution = solution;
-		repaint();
+		//repaint();
 	}
 
 	public void paint(Graphics g) {
-		super.paint(g);
+		//super.paint(g);
 		Graphics2D g2D = (Graphics2D) g; // cast to 2D
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		// g2D.setBackground(Color.white);
@@ -80,13 +101,14 @@ class GCanvas extends Canvas {
 		int pos;
 		LayoutMachine machine1, machine2;
 
+		g2D.setColor(Color.BLACK);
 		// Updating the position of all machines
 		for (int i = 0; i < 7; i++) {
 			x = solution[((i * 3) + 0)];
 			y = solution[((i * 3) + 1)];
 			p = solution[((i * 3) + 2)];
 			pos = convertPosition(p);
-			machine1 = ((LayoutProblem) problem).getMachine(i);
+			machine1 = machines.get(i);
 			machine1.updatePosition(x, y, pos);
 			
 			drawRectangle(g2D,
@@ -95,86 +117,67 @@ class GCanvas extends Canvas {
 					(float) Math.round(((machine1.getX2() - machine1.getX1()) * scale)),
 					(float) Math.round(((machine1.getY2() - machine1.getY1()) * scale))
 			);
+			
 			g2D.drawString(machine1.getName(), Math.round(((((machine1.getX2() - machine1.getX1())/2.0) + machine1.getX1()) * scale) + xx - 5), Math.round(((((machine1.getY2() - machine1.getY1())/2.0) + machine1.getY1()) * scale) + yy + 10));
-			if (machine1.getName() == "A1") {
-				System.out.println("A1: "+
-				Math.round(((machine1.getX1() * scale) + xx)) +" - "+
-				Math.round(((machine1.getY1() * scale) + yy)) +" - "+
-				Math.round(((machine1.getX2() - machine1.getX1()) * scale)) +" - "+
-				Math.round(((machine1.getY2() - machine1.getY1()) * scale)));
-			}
 		}
 		
+		g2D.setColor(Color.RED);
 		// Creating the links
 		int posSaida, posEntrada;
-		ArrayList<LayoutLink> machineLinks = ((LayoutProblem) problem).getLinks();
-		for (LayoutLink machineLink : machineLinks) {
+		for (LayoutLink machineLink : machinesLinks) {
 			x1 = 0.0;
 			x2 = 0.0;
 			y1 = 0.0;
 			y2 = 0.0;
-			machine1 = ((LayoutProblem) problem).getMachine(machineLink.getSourceIndex());
-			machine2 = ((LayoutProblem) problem).getMachine(machineLink.getDestIndex());
+			machine1 = machines.get(machineLink.getSourceIndex());
+			machine2 = machines.get(machineLink.getDestIndex());
 			
 			// Get the current position of the machines
 			posSaida = (machine1.getPosition() + machineLink.getSourceSide()) % 4;
 			posEntrada = (machine2.getPosition() + machineLink.getDestSide()) % 4;
 			
-			System.out.println(machine1.getPosition() +" - "+ machineLink.getSourceSide() +" - "+ posSaida);
-			System.out.println("Scale: "+ scale);
 			switch (posSaida) {
 				case LayoutMachine.TOP :
 					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
-					y1 = machine1.getX1();
-					System.out.println("TOP");
+					y1 = machine1.getY1();
 					break;
 				case LayoutMachine.BOTTOM :
 					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
-					y1 = machine1.getX2();
-					System.out.println("BOTTOM");
+					y1 = machine1.getY2();
 					break;
 				case LayoutMachine.LEFT :
-					x1 = machine1.getX2();
-					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
-					System.out.println("LEFT");
-					System.out.println(machine1.getX1() +" - "+ machine1.getX2() +" - "+ machine1.getY1() +" - "+ machine1.getY2());
-					System.out.println(x1 +" - "+ y1);
-					break;
-				case LayoutMachine.RIGHT :
 					x1 = machine1.getX1();
 					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
-					System.out.println("RIGHT");
+					break;
+				case LayoutMachine.RIGHT :
+					x1 = machine1.getX2();
+					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
 					break;
 			}
 			switch (posEntrada) {
 				case LayoutMachine.TOP :
 					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
-					y2 = machine2.getX1();
+					y2 = machine2.getY1();
 					break;
 				case LayoutMachine.BOTTOM :
 					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
-					y2 = machine2.getX2();
+					y2 = machine2.getY2();
 					break;
 				case LayoutMachine.LEFT :
-					x2 = machine2.getX2();
+					x2 = machine2.getX1();
 					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 				case LayoutMachine.RIGHT :
-					x2 = machine2.getX1();
+					x2 = machine2.getX2();
 					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 			}
 			g2D.drawLine(
 					(int) Math.round((x1 * scale) + xx),
 					(int) Math.round((y1 * scale) + yy),
-					/*
 					(int) Math.round((x2 * scale) + xx),
 					(int) Math.round((y2 * scale) + yy)
-					*/
-					0,
-					0
 				);
-			break;
 		}
 	}
 
