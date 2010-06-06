@@ -50,4 +50,6 @@ public interface IProblem {
 	 * @return The fitness of the given solution.
 	 */
 	double getFitness(double ... solution);
+	
+	public boolean verifyConstraints(double... variables);
 }
