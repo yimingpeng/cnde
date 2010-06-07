@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * +------+    +---+
  * 
  */
-public class LayoutProblem implements IProblem {
+public class LayoutProblemSimple implements IProblem {
 	int dimensions;
 	double[] leftBounds;
 	double[] rightBounds;
@@ -27,20 +27,20 @@ public class LayoutProblem implements IProblem {
 	ArrayList<LayoutMachine> machines;
 	ArrayList<LayoutLink> machinesLinks;
 	
-	public LayoutProblem() {
+	public LayoutProblemSimple() {
 		super();
-		/*
+		
 		qtyMachines = 7;
 		
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 1, 1)); // A1
-		machines.add(new LayoutMachine("B1", 1, 1));   // B1
-		machines.add(new LayoutMachine("B2", 1, 1));   // B2
-		machines.add(new LayoutMachine("B3", 1, 1));   // B3
-		machines.add(new LayoutMachine("C1", 1, 1));   // C1
-		machines.add(new LayoutMachine("C2", 1, 1));   // C2
-		machines.add(new LayoutMachine("D1", 1, 1));  // D1
+		machines.add(new LayoutMachine("A1", 10, 10)); // A1
+		machines.add(new LayoutMachine("B1", 10, 10));   // B1
+		machines.add(new LayoutMachine("B2", 10, 10));   // B2
+		machines.add(new LayoutMachine("B3", 10, 10));   // B3
+		machines.add(new LayoutMachine("C1", 10, 10));   // C1
+		machines.add(new LayoutMachine("C2", 10, 10));   // C2
+		machines.add(new LayoutMachine("D1", 10, 10));  // D1
 		
 		// Creating links
 		machinesLinks = new ArrayList<LayoutLink>();
@@ -53,12 +53,13 @@ public class LayoutProblem implements IProblem {
 		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // B3->C2
 		machinesLinks.add(new LayoutLink(4, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C1->D1
 		machinesLinks.add(new LayoutLink(5, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C2->D1
-		*/
+		
+		/*
 		qtyMachines = 5;
 		
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 10, 20));  // A1
+		machines.add(new LayoutMachine("A1", 10, 10));  // A1
 		machines.add(new LayoutMachine("B1", 10, 10));  // B1
 		machines.add(new LayoutMachine("B2", 10, 10));  // B2
 		machines.add(new LayoutMachine("C1", 10, 10));  // C1
@@ -71,14 +72,15 @@ public class LayoutProblem implements IProblem {
 		machinesLinks.add(new LayoutLink(1, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B1->C1
 		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B2->C1
 		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // C1->D1
+		*/
 		
-		dimensions = (3 * qtyMachines);
+		dimensions = (2 * qtyMachines);
 		leftBounds = new double[dimensions];
 		rightBounds = new double[dimensions];
 		for (int i = 0; i < dimensions; i++) {
-			double[] dimMax = new double[]{60,60,1};
+			double[] dimMax = new double[]{50,50};
 			leftBounds[i] = 0;
-			rightBounds[i] = dimMax[ (i % 3) ];
+			rightBounds[i] = dimMax[ (i % 2) ];
 		}
 	}
 	
@@ -122,22 +124,23 @@ public class LayoutProblem implements IProblem {
 	 */
 	public double getFitness(double... variables) {
 		double result = 0;
-		double x, y, p;
-		int pos;
+		double x, y;
+		//double x, y, p;
+		//int pos;
 		LayoutMachine machine1, machine2;
 		
 		// Updating the position of all machines
 		for (int i = 0; i < qtyMachines; i++) {
-			x = variables[ ((i*3)+0) ];
-			y = variables[ ((i*3)+1) ];
-			p = variables[ ((i*3)+2) ];
-			pos = convertPosition(p);
+			x = variables[ ((i*2)+0) ];
+			y = variables[ ((i*2)+1) ];
+			//p = variables[ ((i*3)+2) ];
+			//pos = convertPosition(p);
 			machine1 = machines.get(i);
-			machine1.updatePosition(x, y, pos);
+			machine1.updatePosition(x, y);
 		}
 		
 		double x1, x2, y1, y2, w, h;
-		int posSaida, posEntrada;
+		//int posSaida, posEntrada;
 		for (LayoutLink machineLink : machinesLinks) {
 			x1 = 0.0;
 			x2 = 0.0;
@@ -205,25 +208,26 @@ public class LayoutProblem implements IProblem {
 	
 	public boolean verifyConstraints(double... variables) {
 		// Updating the position of all machines
-		double x, y, p;
-		int pos;
+		double x, y;
+		//double x, y, p;
+		//int pos;
 		LayoutMachine machine1, machine2;
 		for (int i = 0; i < qtyMachines; i++) {
-			x = variables[ ((i*3)+0) ];
-			y = variables[ ((i*3)+1) ];
-			p = variables[ ((i*3)+2) ];
-			pos = this.convertPosition(p);
+			x = variables[ ((i*2)+0) ];
+			y = variables[ ((i*2)+1) ];
+			//p = variables[ ((i*3)+2) ];
+			//pos = this.convertPosition(p);
 			machine1 = machines.get(i);
-			machine1.updatePosition(x, y, pos);
+			machine1.updatePosition(x, y);
 		}
 		
 		// Verify if the machines can be into the area
 		for (int i = 0; i < qtyMachines; i++) {
 			machine1 = machines.get(i);
-			if (machine1.getX1() < leftBounds[ ((i*3)+0) ]) return false;
-			if (machine1.getY1() < leftBounds[ ((i*3)+1) ]) return false;
-			if (machine1.getX2() > rightBounds[ ((i*3)+0) ]) return false;
-			if (machine1.getY2() > rightBounds[ ((i*3)+1) ]) return false;
+			if (machine1.getX1() < leftBounds[ ((i*2)+0) ]) return false;
+			if (machine1.getY1() < leftBounds[ ((i*2)+1) ]) return false;
+			if (machine1.getX2() > rightBounds[ ((i*2)+0) ]) return false;
+			if (machine1.getY2() > rightBounds[ ((i*2)+1) ]) return false;
 		}
 		
 		// Verify if exists a machine under other machine
@@ -240,12 +244,14 @@ public class LayoutProblem implements IProblem {
 		return true;
 	}
 	
+	/*
 	private int convertPosition(double position) {
 		if (position <= 0.25) return 0;
 		if (position <= 0.5) return 1;
 		if (position <= 0.75) return 2;
 		return 3;
 	}
+	*/
 	
 	public ArrayList<LayoutMachine> getMachines() {
 		return machines;

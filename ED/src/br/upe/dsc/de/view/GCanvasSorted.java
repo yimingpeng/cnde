@@ -14,14 +14,14 @@ import br.upe.dsc.de.problem.IProblem;
 import br.upe.dsc.de.problem.LayoutLink;
 import br.upe.dsc.de.problem.LayoutMachine;
 
-class GCanvas extends Canvas {
+class GCanvasSorted extends Canvas {
 	private static final long serialVersionUID = 1L;
 	private double[] solution;
 	private ArrayList<LayoutMachine> machines;
 	ArrayList<LayoutLink> machinesLinks;
 	private IProblem problem;
 
-	public GCanvas(IProblem problem) {
+	public GCanvasSorted(IProblem problem) {
 		this.problem = problem;
 		/*
 		// Creating machines
@@ -48,7 +48,7 @@ class GCanvas extends Canvas {
 		*/
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 10, 20));  // A1
+		machines.add(new LayoutMachine("A1", 10, 10));  // A1
 		machines.add(new LayoutMachine("B1", 10, 10));  // B1
 		machines.add(new LayoutMachine("B2", 10, 10));  // B2
 		machines.add(new LayoutMachine("C1", 10, 10));  // C1
@@ -150,7 +150,6 @@ class GCanvas extends Canvas {
 			machine2 = machines.get(machineLink.getDestIndex());
 			
 			// Get the current position of the machines
-			/*
 			posSaida = (machine1.getPosition() + machineLink.getSourceSide()) % 4;
 			posEntrada = (machine2.getPosition() + machineLink.getDestSide()) % 4;
 			
@@ -190,13 +189,6 @@ class GCanvas extends Canvas {
 					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 			}
-			*/
-			x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
-			y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
-			
-			x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
-			y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
-			
 			g2D.drawLine(
 					(int) Math.round((x1 * scale) + xx),
 					(int) Math.round((y1 * scale) + yy),
