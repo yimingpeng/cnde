@@ -26,21 +26,13 @@ public class LayoutProblem implements IProblem {
 	int qtyMachines;
 	ArrayList<LayoutMachine> machines;
 	ArrayList<LayoutLink> machinesLinks;
+	ArrayList<LayoutMapRestriction> mapRestrictions;
 	
 	public LayoutProblem() {
 		super();
 		qtyMachines = 6;
 		
 		// Creating machines
-		/*
-		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 12, 18)); // A1
-		machines.add(new LayoutMachine("B1", 6, 10)); // B1
-		machines.add(new LayoutMachine("B2", 22, 5)); // B2
-		machines.add(new LayoutMachine("C1", 5, 13)); // C1
-		machines.add(new LayoutMachine("C2", 9, 7)); // C2
-		machines.add(new LayoutMachine("D1", 13, 22)); // D1
-		*/
 		machines = new ArrayList<LayoutMachine>();
 		machines.add(new LayoutMachine("A1", 10, 20)); // A1
 		machines.add(new LayoutMachine("B1", 10, 10)); // B1
@@ -58,31 +50,53 @@ public class LayoutProblem implements IProblem {
 		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // C1->D1
 		machinesLinks.add(new LayoutLink(4, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // C2->D1
 		
+		// Creating restrictions
+		mapRestrictions = new ArrayList<LayoutMapRestriction>();
+		mapRestrictions.add(new LayoutMapRestriction(0, 0, 20, 10));
+		mapRestrictions.add(new LayoutMapRestriction(0, 0, 10, 20));
+		mapRestrictions.add(new LayoutMapRestriction(50, 0, 20, 10));
+		mapRestrictions.add(new LayoutMapRestriction(60, 0, 10, 20));
+		mapRestrictions.add(new LayoutMapRestriction(0, 60, 20, 10));
+		mapRestrictions.add(new LayoutMapRestriction(0, 50, 10, 20));
+		mapRestrictions.add(new LayoutMapRestriction(50, 60, 20, 10));
+		mapRestrictions.add(new LayoutMapRestriction(60, 50, 10, 20));
+		//mapRestrictions.add(new LayoutMapRestriction(30, 30, 10, 10));
+		
 		/*
-		qtyMachines = 5;
+		qtyMachines = 6;
 		
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 10, 10));  // A1
-		machines.add(new LayoutMachine("B1", 10, 10));  // B1
-		machines.add(new LayoutMachine("B2", 10, 10));  // B2
-		machines.add(new LayoutMachine("C1", 10, 10));  // C1
-		machines.add(new LayoutMachine("D1", 10, 10));  // D1
+		machines.add(new LayoutMachine("A1", (int) (17 * 0.8), (int) (27 * 0.8))); // A1
+		machines.add(new LayoutMachine("B1", (int) (17 * 0.8), (int) (34 * 0.8))); // B1
+		machines.add(new LayoutMachine("B2", (int) (17 * 0.8), (int) (30 * 0.8))); // B2
+		machines.add(new LayoutMachine("C1", (int) (39 * 0.8), (int) (17 * 0.8))); // C1
+		machines.add(new LayoutMachine("C2", (int) (39 * 0.8), (int) (17 * 0.8))); // C2
+		machines.add(new LayoutMachine("D1", (int) (16 * 0.8), (int) (23 * 0.8))); // D1
 		
 		// Creating links
 		machinesLinks = new ArrayList<LayoutLink>();
 		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 1, LayoutMachine.LEFT)); // A1->B1
 		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 2, LayoutMachine.LEFT)); // A1->B2
 		machinesLinks.add(new LayoutLink(1, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B1->C1
-		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B2->C1
-		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // C1->D1
+		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // B2->C2
+		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // C1->D1
+		machinesLinks.add(new LayoutLink(4, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // C2->D1
+		
+		// Creating restrictions
+		mapRestrictions = new ArrayList<LayoutMapRestriction>();
+		mapRestrictions.add(new LayoutMapRestriction(0, 0, 54, 16));
+		mapRestrictions.add(new LayoutMapRestriction(0, 0, 12, 24));
+		mapRestrictions.add(new LayoutMapRestriction(0, 78, 12, 22));
+		mapRestrictions.add(new LayoutMapRestriction(55, 89, 45, 11));
 		*/
 		
 		dimensions = (3 * qtyMachines);
 		leftBounds = new double[dimensions];
 		rightBounds = new double[dimensions];
 		for (int i = 0; i < dimensions; i++) {
-			double[] dimMax = new double[]{80,80,1};
+			double[] dimMax = new double[]{70,70,1};
+			//double[] dimMax = new double[]{100,100,1};
 			leftBounds[i] = 0;
 			rightBounds[i] = dimMax[ (i % 3) ];
 		}
@@ -231,6 +245,12 @@ public class LayoutProblem implements IProblem {
 				machine2 = machines.get(j);
 				if (!(machine1.getX1() > machine2.getX2() || machine1.getX2() < machine2.getX1() ||
 					machine1.getY1() > machine2.getY2() || machine1.getY2() < machine2.getY1())) {
+					return false;
+				}
+			}
+			for (LayoutMapRestriction mapRestriction : mapRestrictions) {
+				if (!(machine1.getX1() > mapRestriction.getX2() || machine1.getX2() < mapRestriction.getX1() ||
+						machine1.getY1() > mapRestriction.getY2() || machine1.getY2() < mapRestriction.getY1())) {
 					return false;
 				}
 			}
