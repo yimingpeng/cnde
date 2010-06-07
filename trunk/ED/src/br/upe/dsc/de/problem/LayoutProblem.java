@@ -29,36 +29,41 @@ public class LayoutProblem implements IProblem {
 	
 	public LayoutProblem() {
 		super();
-		/*
-		qtyMachines = 7;
+		qtyMachines = 6;
 		
 		// Creating machines
+		/*
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 1, 1)); // A1
-		machines.add(new LayoutMachine("B1", 1, 1));   // B1
-		machines.add(new LayoutMachine("B2", 1, 1));   // B2
-		machines.add(new LayoutMachine("B3", 1, 1));   // B3
-		machines.add(new LayoutMachine("C1", 1, 1));   // C1
-		machines.add(new LayoutMachine("C2", 1, 1));   // C2
-		machines.add(new LayoutMachine("D1", 1, 1));  // D1
+		machines.add(new LayoutMachine("A1", 12, 18)); // A1
+		machines.add(new LayoutMachine("B1", 6, 10)); // B1
+		machines.add(new LayoutMachine("B2", 22, 5)); // B2
+		machines.add(new LayoutMachine("C1", 5, 13)); // C1
+		machines.add(new LayoutMachine("C2", 9, 7)); // C2
+		machines.add(new LayoutMachine("D1", 13, 22)); // D1
+		*/
+		machines = new ArrayList<LayoutMachine>();
+		machines.add(new LayoutMachine("A1", 10, 20)); // A1
+		machines.add(new LayoutMachine("B1", 10, 10)); // B1
+		machines.add(new LayoutMachine("B2", 10, 10)); // B2
+		machines.add(new LayoutMachine("C1", 10, 10)); // C1
+		machines.add(new LayoutMachine("C2", 10, 10)); // C2
+		machines.add(new LayoutMachine("D1", 10, 20)); // D1
 		
 		// Creating links
 		machinesLinks = new ArrayList<LayoutLink>();
 		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 1, LayoutMachine.LEFT)); // A1->B1
 		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 2, LayoutMachine.LEFT)); // A1->B2
-		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // A1->B3
-		machinesLinks.add(new LayoutLink(1, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // B1->C1
-		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // B2->C1
-		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // B2->C2
-		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // B3->C2
-		machinesLinks.add(new LayoutLink(4, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C1->D1
-		machinesLinks.add(new LayoutLink(5, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C2->D1
-		*/
+		machinesLinks.add(new LayoutLink(1, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B1->C1
+		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // B2->C2
+		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // C1->D1
+		machinesLinks.add(new LayoutLink(4, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // C2->D1
+		
+		/*
 		qtyMachines = 5;
 		
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 10, 20));  // A1
+		machines.add(new LayoutMachine("A1", 10, 10));  // A1
 		machines.add(new LayoutMachine("B1", 10, 10));  // B1
 		machines.add(new LayoutMachine("B2", 10, 10));  // B2
 		machines.add(new LayoutMachine("C1", 10, 10));  // C1
@@ -71,12 +76,13 @@ public class LayoutProblem implements IProblem {
 		machinesLinks.add(new LayoutLink(1, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B1->C1
 		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B2->C1
 		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // C1->D1
+		*/
 		
 		dimensions = (3 * qtyMachines);
 		leftBounds = new double[dimensions];
 		rightBounds = new double[dimensions];
 		for (int i = 0; i < dimensions; i++) {
-			double[] dimMax = new double[]{60,60,1};
+			double[] dimMax = new double[]{80,80,1};
 			leftBounds[i] = 0;
 			rightBounds[i] = dimMax[ (i % 3) ];
 		}
@@ -147,10 +153,9 @@ public class LayoutProblem implements IProblem {
 			machine2 = machines.get(machineLink.getDestIndex());
 			
 			// Get the current position of the machines
-			double value;
-			/*
 			posSaida = (machine1.getPosition() + machineLink.getSourceSide()) % 4;
 			posEntrada = (machine2.getPosition() + machineLink.getDestSide()) % 4;
+			double value;
 			
 			switch (posSaida) {
 				case LayoutMachine.TOP :
@@ -188,13 +193,6 @@ public class LayoutProblem implements IProblem {
 					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 			}
-			*/
-			x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
-			y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
-			
-			x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
-			y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
-			
 			w = Math.abs(x2 - x1);
 			h = Math.abs(y2 - y1);
 			value = (w*w) + (h*h);
