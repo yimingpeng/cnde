@@ -23,15 +23,16 @@ class GCanvas extends Canvas {
 
 	public GCanvas(IProblem problem) {
 		this.problem = problem;
+		/*
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 8, 24)); // A1
-		machines.add(new LayoutMachine("B1", 8, 8));   // B1
-		machines.add(new LayoutMachine("B2", 8, 8));   // B2
-		machines.add(new LayoutMachine("B3", 8, 8));   // B3
-		machines.add(new LayoutMachine("C1", 8, 8));   // C1
-		machines.add(new LayoutMachine("C2", 8, 8));   // C2
-		machines.add(new LayoutMachine("D1", 8, 16));  // D1
+		machines.add(new LayoutMachine("A1", 1, 1)); // A1
+		machines.add(new LayoutMachine("B1", 1, 1));   // B1
+		machines.add(new LayoutMachine("B2", 1, 1));   // B2
+		machines.add(new LayoutMachine("B3", 1, 1));   // B3
+		machines.add(new LayoutMachine("C1", 1, 1));   // C1
+		machines.add(new LayoutMachine("C2", 1, 1));   // C2
+		machines.add(new LayoutMachine("D1", 1, 1));  // D1
 		
 		// Creating links
 		machinesLinks = new ArrayList<LayoutLink>();
@@ -44,6 +45,22 @@ class GCanvas extends Canvas {
 		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // B3->C2
 		machinesLinks.add(new LayoutLink(4, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C1->D1
 		machinesLinks.add(new LayoutLink(5, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C2->D1
+		*/
+		// Creating machines
+		machines = new ArrayList<LayoutMachine>();
+		machines.add(new LayoutMachine("A1", 10, 10));  // A1
+		machines.add(new LayoutMachine("B1", 10, 10));  // B1
+		machines.add(new LayoutMachine("B2", 10, 10));  // B2
+		machines.add(new LayoutMachine("C1", 10, 10));  // C1
+		machines.add(new LayoutMachine("D1", 10, 10));  // D1
+		
+		// Creating links
+		machinesLinks = new ArrayList<LayoutLink>();
+		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 1, LayoutMachine.LEFT)); // A1->B1
+		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 2, LayoutMachine.LEFT)); // A1->B2
+		machinesLinks.add(new LayoutLink(1, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B1->C1
+		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B2->C1
+		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // C1->D1
 		
 		solution = new double[problem.getDimensionsNumber()];
 		for (int i = 0; i < solution.length; i++) {
@@ -103,7 +120,7 @@ class GCanvas extends Canvas {
 
 		g2D.setColor(Color.BLACK);
 		// Updating the position of all machines
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < machines.size(); i++) {
 			x = solution[((i * 3) + 0)];
 			y = solution[((i * 3) + 1)];
 			p = solution[((i * 3) + 2)];
