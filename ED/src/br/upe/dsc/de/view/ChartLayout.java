@@ -20,7 +20,7 @@ public class ChartLayout extends JFrame implements Runnable {
 	public ChartLayout(IProblem problem) {
 		super(problem.getName());
 
-		setBounds(50, 50, 800, 600);
+		setBounds(0, 0, 600, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container con = this.getContentPane();
 		con.setBackground(Color.white);

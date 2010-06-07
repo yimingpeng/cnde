@@ -153,10 +153,7 @@ public class DifferentialEvolution {
 
 			// If the individual created in the crossover operation breaks some
 			// constraint, we are going to create a new individual.
-			if (!problem.verifyConstraints(recombinationIndividualSolution)) {
-				createIndividual(i);
-			}
-			else {
+			if (problem.verifyConstraints(recombinationIndividualSolution)) {
 				recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
 				if (problem.compareFitness(population[i].getSolutionFitness(),
 						recombinationIndividualSolutionFitness)) {
@@ -166,6 +163,7 @@ public class DifferentialEvolution {
 					calculateBestSolution(population[i]);
 				}
 			}
+			//else createIndividual(i);
 		}
 
 		populationObserver.update(population);

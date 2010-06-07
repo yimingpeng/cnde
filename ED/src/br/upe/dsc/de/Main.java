@@ -9,11 +9,11 @@ import br.upe.dsc.de.view.ViewManager;
 public class Main {
 
 	public static void main(String[] args) {
-		int populationSize = 1000;
-		int maximumIterations = 10000;
-		double standardDeviation = 0.01;
+		int populationSize = 300;
+		int maximumIterations = 30000;
+		double standardDeviation = 0.1;
 		double scaleFactor = 0.5;
-		double recombinationProbability = 0.9;
+		double recombinationProbability = 0.8;
 		IProblem problem = new LayoutProblem();
 		PopulationObserver observer = new PopulationObserver(populationSize, new FileManager(problem.getName()));
 
