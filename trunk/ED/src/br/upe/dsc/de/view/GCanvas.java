@@ -13,26 +13,19 @@ import java.util.ArrayList;
 import br.upe.dsc.de.problem.IProblem;
 import br.upe.dsc.de.problem.LayoutLink;
 import br.upe.dsc.de.problem.LayoutMachine;
+import br.upe.dsc.de.problem.LayoutMapRestriction;
 
 class GCanvas extends Canvas {
 	private static final long serialVersionUID = 1L;
 	private double[] solution;
 	private ArrayList<LayoutMachine> machines;
-	ArrayList<LayoutLink> machinesLinks;
+	private ArrayList<LayoutLink> machinesLinks;
+	private ArrayList<LayoutMapRestriction> mapRestrictions;
 	private IProblem problem;
 
 	public GCanvas(IProblem problem) {
 		this.problem = problem;
 		// Creating machines
-		/*
-		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 12, 18)); // A1
-		machines.add(new LayoutMachine("B1", 6, 10)); // B1
-		machines.add(new LayoutMachine("B2", 22, 5)); // B2
-		machines.add(new LayoutMachine("C1", 5, 13)); // C1
-		machines.add(new LayoutMachine("C2", 9, 7)); // C2
-		machines.add(new LayoutMachine("D1", 13, 22)); // D1
-		*/
 		machines = new ArrayList<LayoutMachine>();
 		machines.add(new LayoutMachine("A1", 10, 20)); // A1
 		machines.add(new LayoutMachine("B1", 10, 10)); // B1
@@ -49,23 +42,18 @@ class GCanvas extends Canvas {
 		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // B2->C2
 		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // C1->D1
 		machinesLinks.add(new LayoutLink(4, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // C2->D1
-		/*
-		// Creating machines
-		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 10, 10));  // A1
-		machines.add(new LayoutMachine("B1", 10, 10));  // B1
-		machines.add(new LayoutMachine("B2", 10, 10));  // B2
-		machines.add(new LayoutMachine("C1", 10, 10));  // C1
-		machines.add(new LayoutMachine("D1", 10, 10));  // D1
 		
-		// Creating links
-		machinesLinks = new ArrayList<LayoutLink>();
-		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 1, LayoutMachine.LEFT)); // A1->B1
-		machinesLinks.add(new LayoutLink(0, LayoutMachine.RIGHT, 2, LayoutMachine.LEFT)); // A1->B2
-		machinesLinks.add(new LayoutLink(1, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B1->C1
-		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B2->C1
-		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // C1->D1
-		*/
+		// Creating restrictions
+		mapRestrictions = new ArrayList<LayoutMapRestriction>();
+		mapRestrictions.add(new LayoutMapRestriction(0, 0, 20, 10));
+		mapRestrictions.add(new LayoutMapRestriction(0, 0, 10, 20));
+		mapRestrictions.add(new LayoutMapRestriction(50, 0, 20, 10));
+		mapRestrictions.add(new LayoutMapRestriction(60, 0, 10, 20));
+		mapRestrictions.add(new LayoutMapRestriction(0, 60, 20, 10));
+		mapRestrictions.add(new LayoutMapRestriction(0, 50, 10, 20));
+		mapRestrictions.add(new LayoutMapRestriction(50, 60, 20, 10));
+		mapRestrictions.add(new LayoutMapRestriction(60, 50, 10, 20));
+		//mapRestrictions.add(new LayoutMapRestriction(30, 30, 10, 10));
 		
 		solution = new double[problem.getDimensionsNumber()];
 		for (int i = 0; i < solution.length; i++) {
@@ -119,6 +107,11 @@ class GCanvas extends Canvas {
 		g2D.setColor(Color.LIGHT_GRAY);
 		g2D.drawRect(xx, yy, (int) Math.ceil(w * scale), (int) Math.ceil(h * scale));
 
+		// Drawing the map restrictions
+		for (LayoutMapRestriction mapRestriction : mapRestrictions) {
+			g2D.fillRect((int) Math.round((mapRestriction.getX1() * scale) + xx), (int) Math.round((mapRestriction.getY1() * scale) + yy), (int) Math.round(mapRestriction.getW() * scale), (int) Math.round(mapRestriction.getH() * scale));
+		}
+		
 		double x, y, p;
 		int pos;
 		LayoutMachine machine1, machine2;

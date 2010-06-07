@@ -87,7 +87,7 @@ public class DifferentialEvolution {
 			chartLayout.createChart(bestSolution);
 
 			if ((i % 50) == 0) {
-				System.out.println("Iteração " + i + " - BestFitness: " + bestSolutionFitness);
+				System.out.println("Iteração " + i + " - BestFitness: " + bestSolutionFitness +" - Desv. Padrão: "+ currentStandardDeviation);
 				/*
 				 * for (int j = 0; j < dimensions; j++) {
 				 * System.out.println("Solucao["+ j +"] = "+ bestSolution[j]); }
@@ -140,8 +140,8 @@ public class DifferentialEvolution {
 	private void createIndividual(int i, int[] availablePositions) {
 		double[] initialSolution;
 		population[i] = new Individual(dimensions);
-		initialSolution = getSolution(availablePositions);
-//		initialSolution = getRandomSolution();
+//		initialSolution = getSolution(availablePositions);
+		initialSolution = getRandomSolution();
 		population[i].updateSolution(initialSolution, problem.getFitness(initialSolution));
 		allFitness[i] = population[i].getSolutionFitness();
 	}
