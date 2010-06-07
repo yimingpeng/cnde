@@ -3,6 +3,8 @@ package br.upe.dsc.de.algorithm;
 import java.util.Random;
 
 import br.upe.dsc.de.problem.IProblem;
+import br.upe.dsc.de.problem.LayoutMachine;
+import br.upe.dsc.de.problem.LayoutProblem;
 import br.upe.dsc.de.view.ChartLayout;
 import br.upe.dsc.de.view.PopulationObserver;
 
@@ -81,18 +83,17 @@ public class DifferentialEvolution {
 			if (currentStandardDeviation < standardDeviation) {
 				break;
 			}
-			
+
 			chartLayout.createChart(bestSolution);
-			
+
 			if ((i % 50) == 0) {
-				System.out.println("Iteração "+ i +" - BestFitness: "+ bestSolutionFitness);
+				System.out.println("Iteração " + i + " - BestFitness: " + bestSolutionFitness);
 				/*
-				for (int j = 0; j < dimensions; j++) {
-					System.out.println("Solucao["+ j +"] = "+ bestSolution[j]);
-				}
-				*/
+				 * for (int j = 0; j < dimensions; j++) {
+				 * System.out.println("Solucao["+ j +"] = "+ bestSolution[j]); }
+				 */
 			}
-			//break;
+			// break;
 		}
 
 		System.out.println("Best solution: " + bestSolutionFitness);
@@ -123,8 +124,11 @@ public class DifferentialEvolution {
 		populationObserver.getFileManager().printFileHeader(populationSize, maximumIterations, standardDeviation,
 			scaleFactor, recombinationProbability);
 
+		int[] availablePositions = divideAreaIntoPositions();
+		
 		for (int i = 0; i < populationSize; i++) {
-			createIndividual(i);
+			createIndividual(i, availablePositions.clone());
+			// getRandomSolution();
 		}
 
 		bestSolutionFitness = population[0].getSolutionFitness();
@@ -133,10 +137,11 @@ public class DifferentialEvolution {
 		}
 	}
 
-	private void createIndividual(int i) {
+	private void createIndividual(int i, int[] availablePositions) {
 		double[] initialSolution;
 		population[i] = new Individual(dimensions);
-		initialSolution = getRandomSolution();
+		initialSolution = getSolution(availablePositions);
+//		initialSolution = getRandomSolution();
 		population[i].updateSolution(initialSolution, problem.getFitness(initialSolution));
 		allFitness[i] = population[i].getSolutionFitness();
 	}
@@ -155,30 +160,24 @@ public class DifferentialEvolution {
 			// constraint, we are going to create a new individual.
 			if (problem.verifyConstraints(recombinationIndividualSolution)) {
 				recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
-				if (problem.compareFitness(population[i].getSolutionFitness(),
-						recombinationIndividualSolutionFitness)) {
+				if (problem.compareFitness(population[i].getSolutionFitness(), recombinationIndividualSolutionFitness)) {
 					population[i].updateSolution(recombinationIndividualSolution.clone(),
 						recombinationIndividualSolutionFitness);
 					allFitness[i] = recombinationIndividualSolutionFitness;
 					calculateBestSolution(population[i]);
 				}
 			}
-			//else createIndividual(i);
+			// else createIndividual(i);
 		}
 
 		populationObserver.update(population);
 
 		// Controls the velocity which the particles moves on the screen
 		/*
-		try {
-			if (delayExecution) {
-				chartLayout.createChart(bestSolution);
-				Thread.sleep(150);
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		*/
+		 * try { if (delayExecution) { chartLayout.createChart(bestSolution);
+		 * Thread.sleep(150); } } catch (InterruptedException e) {
+		 * e.printStackTrace(); }
+		 */
 	}
 
 	// Performs the mutation phase of the algorithm creating the
@@ -247,41 +246,133 @@ public class DifferentialEvolution {
 		}
 	}
 
-	private double trimPositionToProblemLimits(double position, int dimension) {
-		double retorno = position;
+	private double trimPositionToProblemLimits(double currentPosition, int dimension) {
+		double position = currentPosition;
 
-		if (retorno > problem.getUpperLimit(dimension)) {
-			retorno = problem.getUpperLimit(dimension);
-		} else if (retorno < problem.getLowerLimit(dimension)) {
-			retorno = problem.getLowerLimit(dimension);
+		if (position > problem.getUpperLimit(dimension)) {
+			position = problem.getUpperLimit(dimension);
+		} else if (position < problem.getLowerLimit(dimension)) {
+			position = problem.getLowerLimit(dimension);
 		}
 
-		return retorno;
-	}
-
-	private double[] getRandomSolution() {
-		double[] position = new double[dimensions];
-		Random random = new Random(System.nanoTime());
-		
-		do {
-			for (int i = 0; i < dimensions; i++) {
-				double rightBound, leftBound, value = random.nextDouble();
-				rightBound = problem.getUpperLimit(i);
-				leftBound = problem.getLowerLimit(i);
-				
-				value = leftBound + (rightBound - leftBound) * value;
-				position[i] = value;
-				if (position[i] > rightBound) {
-					position[i] = rightBound;
-				}
-				if (position[i] < leftBound) {
-					position[i] = leftBound;
-				}
-			}
-		} while (!problem.verifyConstraints(position));
 		return position;
 	}
 
+	private double[] getSolution(int[] availablePositions) {
+		double[] solution = new double[dimensions];
+		Random random = new Random(System.nanoTime());
+		double rightBound, leftBound;
+		
+		int availablePositionIndex = getNextAvailablePosition(availablePositions);
+		
+		for (int i = 0; i < dimensions; i += 3) {
+
+			// Coordinates of X and Y axis
+			solution[i] = availablePositions[availablePositionIndex];
+			solution[i + 1] = availablePositions[availablePositionIndex+1];
+			
+			// Position of the machine
+			leftBound = problem.getLowerLimit(i + 2);
+			rightBound = problem.getUpperLimit(i + 2);
+			
+			solution[i + 2] = leftBound + (rightBound - leftBound) * random.nextDouble();
+			if (solution[i + 2] > rightBound) {
+				solution[i + 2] = rightBound;
+			} else if (solution[i + 2] < leftBound) {
+				solution[i + 2] = leftBound;
+			}
+
+			// Brand values as used
+			availablePositions[availablePositionIndex] = -1;
+			availablePositions[availablePositionIndex + 1] = -1;
+
+			availablePositionIndex = getNextAvailablePosition(availablePositions);
+		}
+		
+		return solution;
+	}
+
+	private int getNextAvailablePosition(int[] availablePositions) {
+		Random random = new Random(System.nanoTime());
+		int i;
+		
+		int[] possibleIndexes = new int[(availablePositions.length+1)/2];
+		for (int j = 0, k = 0; j < possibleIndexes.length; j++, k += 2) {
+			possibleIndexes[j] = k;
+		}
+		
+		do {
+			i = random.nextInt(possibleIndexes.length);
+		} while (availablePositions[possibleIndexes[i]] == -1);
+		
+		return possibleIndexes[i];
+	}
+
+	private int[] divideAreaIntoPositions() {
+		int maximumSide = 0;
+		int currentSide = 0;
+		
+		for (LayoutMachine lm : ((LayoutProblem) problem).getMachines()) {
+			currentSide = lm.getHeight() > lm.getWidth() ? (int) lm.getHeight() : (int) lm.getWidth();
+			if (currentSide > maximumSide) {
+				maximumSide = currentSide;
+			}
+		}
+		
+		int machineArea = maximumSide * maximumSide;
+		int problemArea = (int) (problem.getUpperLimit(0) * problem.getUpperLimit(1));
+		int numberAvailablePositions = problemArea / machineArea;
+
+		int[] availablePositions = new int[numberAvailablePositions * 2];
+
+		int machinesOnSameLine = (int) (problem.getUpperLimit(0) / maximumSide);
+
+		int width = 0;
+		int heigth = 0;
+		int machineCount = 0;
+
+		for (int i = 0; i < availablePositions.length; i += 2) {
+			availablePositions[i] = width;
+			availablePositions[i + 1] = heigth;
+
+			width += maximumSide;
+			machineCount++;
+
+			// If the end of the line was hit, goes to the next line
+			if (machineCount >= machinesOnSameLine) {
+				heigth += maximumSide;
+				width = 0;
+				machineCount = 0;
+			}
+		}
+		
+		return availablePositions;
+	}
+	
+	private double[] getRandomSolution() {
+        double[] position = new double[dimensions];
+        Random random = new Random(System.nanoTime());
+        
+        do {
+                for (int i = 0; i < dimensions; i++) {
+                        double rightBound, leftBound, value = random.nextDouble();
+                        rightBound = problem.getUpperLimit(i);
+                        leftBound = problem.getLowerLimit(i);
+                        
+                        value = leftBound + (rightBound - leftBound) * value;
+                        position[i] = value;
+                        if (position[i] > rightBound) {
+                                position[i] = rightBound;
+                        }
+                        if (position[i] < leftBound) {
+                                position[i] = leftBound;
+                        }
+                }
+        } while (!problem.verifyConstraints(position));
+        return position;
+	}
+
+	
 	public void setChartLayout(ChartLayout chartLayout) {
 		this.chartLayout = chartLayout;
 	}
