@@ -64,4 +64,11 @@ public class LayoutMachine {
 			y2 += width;
 		}
 	}
+	
+	public void updatePosition(double x, double y) {
+		x1 = x;
+		y1 = y;
+		x2 = x1 + width;
+		y2 = y1 + height;
+	}
 }

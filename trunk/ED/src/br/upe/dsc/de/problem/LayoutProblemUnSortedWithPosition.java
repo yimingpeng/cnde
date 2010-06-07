@@ -1,29 +1,37 @@
-package br.upe.dsc.de.view;
+package br.upe.dsc.de.problem;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-import br.upe.dsc.de.problem.IProblem;
-import br.upe.dsc.de.problem.LayoutLink;
-import br.upe.dsc.de.problem.LayoutMachine;
-
-class GCanvas extends Canvas {
-	private static final long serialVersionUID = 1L;
-	private double[] solution;
-	private ArrayList<LayoutMachine> machines;
+/**
+ * The problem proposed:
+ * 
+ * +------+    +---+
+ * |      | -> | B |
+ * |      |    +---+    +---+
+ * |      |          -> | C |
+ * |      |    +---+    +---+    +------+
+ * |  A   | -> | B |          -> |  D   |
+ * |      |    +---+    +---+    +------+
+ * |      |          -> | C |
+ * |      |    +---+    +---+
+ * |      | -> | B |
+ * +------+    +---+
+ * 
+ */
+public class LayoutProblemUnSortedWithPosition implements IProblem {
+	int dimensions;
+	double[] leftBounds;
+	double[] rightBounds;
+	
+	int qtyMachines;
+	ArrayList<LayoutMachine> machines;
 	ArrayList<LayoutLink> machinesLinks;
-	private IProblem problem;
-
-	public GCanvas(IProblem problem) {
-		this.problem = problem;
+	
+	public LayoutProblemUnSortedWithPosition() {
+		super();
 		/*
+		qtyMachines = 7;
+		
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
 		machines.add(new LayoutMachine("A1", 1, 1)); // A1
@@ -46,9 +54,11 @@ class GCanvas extends Canvas {
 		machinesLinks.add(new LayoutLink(4, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C1->D1
 		machinesLinks.add(new LayoutLink(5, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C2->D1
 		*/
+		qtyMachines = 5;
+		
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 10, 20));  // A1
+		machines.add(new LayoutMachine("A1", 10, 10));  // A1
 		machines.add(new LayoutMachine("B1", 10, 10));  // B1
 		machines.add(new LayoutMachine("B2", 10, 10));  // B2
 		machines.add(new LayoutMachine("C1", 10, 10));  // C1
@@ -62,84 +72,71 @@ class GCanvas extends Canvas {
 		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B2->C1
 		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // C1->D1
 		
-		solution = new double[problem.getDimensionsNumber()];
-		for (int i = 0; i < solution.length; i++) {
-			solution[i] = 0.0;
+		dimensions = (3 * qtyMachines);
+		leftBounds = new double[dimensions];
+		rightBounds = new double[dimensions];
+		for (int i = 0; i < dimensions; i++) {
+			double[] dimMax = new double[]{60,60,1};
+			leftBounds[i] = 0;
+			rightBounds[i] = dimMax[ (i % 3) ];
 		}
 	}
-
-	public void setSolution(double[] solution) {
-		this.solution = solution;
-		//repaint();
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getName() {
+		return "Layout Problem";
 	}
-
-	public void paint(Graphics g) {
-		//super.paint(g);
-		Graphics2D g2D = (Graphics2D) g; // cast to 2D
-		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		// g2D.setBackground(Color.white);
-		// Stroke s = new BasicStroke(1);
-		// g2D.setStroke(s);
-		// g2D.setColor(Color.white);
-
-		// IProblem problem = new LayoutProblem();
-		double x1, x2, y1, y2, w, h, scale;
-		int xx, yy, width, height, widthMax, heightMax, margin;
-		x1 = problem.getLowerLimit(0);
-		x2 = problem.getUpperLimit(0);
-		y1 = problem.getLowerLimit(1);
-		y2 = problem.getUpperLimit(1);
-		w = Math.abs(x2 - x1);
-		h = Math.abs(y2 - y1);
-
-		// Calculating the positions and sizes
-		widthMax = getWidth();
-		heightMax = getHeight();
-		margin = 20; // = 20px
-		
-		// Resizing the image
-		width = (widthMax - margin);
-		height = (int) Math.round((h * (widthMax - margin)) / w);
-		if (height > (heightMax - margin)) {
-			height = (heightMax - margin);
-			width = (int) Math.round((w * (heightMax - margin)) / h);
-		}
-		scale = width / w;
-		xx = (int) Math.round(margin / 2.0);
-		yy = (int) Math.round(margin / 2.0);
-
-		g2D.setColor(Color.WHITE);
-		g2D.fillRect(xx, yy, width, height);
-
-		g2D.setColor(Color.LIGHT_GRAY);
-		g2D.drawRect(xx, yy, (int) Math.ceil(w * scale), (int) Math.ceil(h * scale));
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getDimensionsNumber() {
+		return dimensions;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getLowerLimit(int dimension) {
+		return leftBounds[dimension];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getUpperLimit(int dimension) {
+		return rightBounds[dimension];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean compareFitness(double pBestFitness, double currentPositionFitness) {
+		return currentPositionFitness < pBestFitness;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getFitness(double... variables) {
+		double result = 0;
 		double x, y, p;
 		int pos;
 		LayoutMachine machine1, machine2;
-
-		g2D.setColor(Color.BLACK);
+		
 		// Updating the position of all machines
-		for (int i = 0; i < machines.size(); i++) {
-			x = solution[((i * 3) + 0)];
-			y = solution[((i * 3) + 1)];
-			p = solution[((i * 3) + 2)];
+		for (int i = 0; i < qtyMachines; i++) {
+			x = variables[ ((i*3)+0) ];
+			y = variables[ ((i*3)+1) ];
+			p = variables[ ((i*3)+2) ];
 			pos = convertPosition(p);
 			machine1 = machines.get(i);
 			machine1.updatePosition(x, y, pos);
-			
-			drawRectangle(g2D,
-					(float) Math.round(((machine1.getX1() * scale) + xx)),
-					(float) Math.round(((machine1.getY1() * scale) + yy)),
-					(float) Math.round(((machine1.getX2() - machine1.getX1()) * scale)),
-					(float) Math.round(((machine1.getY2() - machine1.getY1()) * scale))
-			);
-			
-			g2D.drawString(machine1.getName(), Math.round(((((machine1.getX2() - machine1.getX1())/2.0) + machine1.getX1()) * scale) + xx - 5), Math.round(((((machine1.getY2() - machine1.getY1())/2.0) + machine1.getY1()) * scale) + yy + 10));
 		}
 		
-		g2D.setColor(Color.RED);
-		// Creating the links
+		double x1, x2, y1, y2, w, h;
 		int posSaida, posEntrada;
 		for (LayoutLink machineLink : machinesLinks) {
 			x1 = 0.0;
@@ -150,6 +147,7 @@ class GCanvas extends Canvas {
 			machine2 = machines.get(machineLink.getDestIndex());
 			
 			// Get the current position of the machines
+			double value;
 			/*
 			posSaida = (machine1.getPosition() + machineLink.getSourceSide()) % 4;
 			posEntrada = (machine2.getPosition() + machineLink.getDestSide()) % 4;
@@ -197,37 +195,67 @@ class GCanvas extends Canvas {
 			x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
 			y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 			
-			g2D.drawLine(
-					(int) Math.round((x1 * scale) + xx),
-					(int) Math.round((y1 * scale) + yy),
-					(int) Math.round((x2 * scale) + xx),
-					(int) Math.round((y2 * scale) + yy)
-				);
+			w = Math.abs(x2 - x1);
+			h = Math.abs(y2 - y1);
+			value = (w*w) + (h*h);
+			result += (value * value);
 		}
+		return Math.sqrt(result);
 	}
-
+	
+	public boolean verifyConstraints(double... variables) {
+		// Updating the position of all machines
+		double x, y, p;
+		int pos;
+		LayoutMachine machine1, machine2;
+		for (int i = 0; i < qtyMachines; i++) {
+			x = variables[ ((i*3)+0) ];
+			y = variables[ ((i*3)+1) ];
+			p = variables[ ((i*3)+2) ];
+			pos = this.convertPosition(p);
+			machine1 = machines.get(i);
+			machine1.updatePosition(x, y, pos);
+		}
+		
+		// Verify if the machines can be into the area
+		for (int i = 0; i < qtyMachines; i++) {
+			machine1 = machines.get(i);
+			if (machine1.getX1() < leftBounds[ ((i*3)+0) ]) return false;
+			if (machine1.getY1() < leftBounds[ ((i*3)+1) ]) return false;
+			if (machine1.getX2() > rightBounds[ ((i*3)+0) ]) return false;
+			if (machine1.getY2() > rightBounds[ ((i*3)+1) ]) return false;
+		}
+		
+		// Verify if exists a machine under other machine
+		for (int i = 0; i < qtyMachines; i++) {
+			machine1 = machines.get(i);
+			for (int j = (i + 1); j < qtyMachines; j++) {
+				machine2 = machines.get(j);
+				if (!(machine1.getX1() > machine2.getX2() || machine1.getX2() < machine2.getX1() ||
+					machine1.getY1() > machine2.getY2() || machine1.getY2() < machine2.getY1())) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	private int convertPosition(double position) {
-		if (position <= 0.25)
-			return 0;
-		if (position <= 0.5)
-			return 1;
-		if (position <= 0.75)
-			return 2;
+		if (position <= 0.25) return 0;
+		if (position <= 0.5) return 1;
+		if (position <= 0.75) return 2;
 		return 3;
 	}
-
-	public void drawArc(Graphics2D g2D, int x1, int y1, int x2, int y2, int sd, int rd, int cl) {
-		Arc2D.Float arc1 = new Arc2D.Float(x1, y1, x2, y2, sd, rd, cl);
-		g2D.fill(arc1);
+	
+	public ArrayList<LayoutMachine> getMachines() {
+		return machines;
 	}
-
-	public void drawEllipse(Graphics2D g2D, int x1, int y1, int x2, int y2) {
-		Ellipse2D.Float oval1 = new Ellipse2D.Float(x1, y1, x2, y2);
-		g2D.fill(oval1);
+	
+	public LayoutMachine getMachine(int index) {
+		return machines.get(index);
 	}
-
-	public void drawRectangle(Graphics2D g2D, float x1, float y1, float x2, float y2) {
-		Rectangle2D.Float rec1 = new Rectangle2D.Float(x1, y1, x2, y2);
-		g2D.draw(rec1);
+	
+	public ArrayList<LayoutLink> getLinks() {
+		return machinesLinks;
 	}
 }

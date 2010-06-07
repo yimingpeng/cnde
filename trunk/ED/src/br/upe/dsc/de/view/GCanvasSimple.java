@@ -14,25 +14,25 @@ import br.upe.dsc.de.problem.IProblem;
 import br.upe.dsc.de.problem.LayoutLink;
 import br.upe.dsc.de.problem.LayoutMachine;
 
-class GCanvas extends Canvas {
+class GCanvasSimple extends Canvas {
 	private static final long serialVersionUID = 1L;
 	private double[] solution;
 	private ArrayList<LayoutMachine> machines;
 	ArrayList<LayoutLink> machinesLinks;
 	private IProblem problem;
 
-	public GCanvas(IProblem problem) {
+	public GCanvasSimple(IProblem problem) {
 		this.problem = problem;
-		/*
+		
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 1, 1)); // A1
-		machines.add(new LayoutMachine("B1", 1, 1));   // B1
-		machines.add(new LayoutMachine("B2", 1, 1));   // B2
-		machines.add(new LayoutMachine("B3", 1, 1));   // B3
-		machines.add(new LayoutMachine("C1", 1, 1));   // C1
-		machines.add(new LayoutMachine("C2", 1, 1));   // C2
-		machines.add(new LayoutMachine("D1", 1, 1));  // D1
+		machines.add(new LayoutMachine("A1", 10, 10)); // A1
+		machines.add(new LayoutMachine("B1", 10, 10));   // B1
+		machines.add(new LayoutMachine("B2", 10, 10));   // B2
+		machines.add(new LayoutMachine("B3", 10, 10));   // B3
+		machines.add(new LayoutMachine("C1", 10, 10));   // C1
+		machines.add(new LayoutMachine("C2", 10, 10));   // C2
+		machines.add(new LayoutMachine("D1", 10, 10));  // D1
 		
 		// Creating links
 		machinesLinks = new ArrayList<LayoutLink>();
@@ -45,10 +45,11 @@ class GCanvas extends Canvas {
 		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 5, LayoutMachine.LEFT)); // B3->C2
 		machinesLinks.add(new LayoutLink(4, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C1->D1
 		machinesLinks.add(new LayoutLink(5, LayoutMachine.RIGHT, 6, LayoutMachine.LEFT)); // C2->D1
-		*/
+		
+		/*
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 10, 20));  // A1
+		machines.add(new LayoutMachine("A1", 10, 10));  // A1
 		machines.add(new LayoutMachine("B1", 10, 10));  // B1
 		machines.add(new LayoutMachine("B2", 10, 10));  // B2
 		machines.add(new LayoutMachine("C1", 10, 10));  // C1
@@ -61,6 +62,7 @@ class GCanvas extends Canvas {
 		machinesLinks.add(new LayoutLink(1, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B1->C1
 		machinesLinks.add(new LayoutLink(2, LayoutMachine.RIGHT, 3, LayoutMachine.LEFT)); // B2->C1
 		machinesLinks.add(new LayoutLink(3, LayoutMachine.RIGHT, 4, LayoutMachine.LEFT)); // C1->D1
+		*/
 		
 		solution = new double[problem.getDimensionsNumber()];
 		for (int i = 0; i < solution.length; i++) {
@@ -114,19 +116,21 @@ class GCanvas extends Canvas {
 		g2D.setColor(Color.LIGHT_GRAY);
 		g2D.drawRect(xx, yy, (int) Math.ceil(w * scale), (int) Math.ceil(h * scale));
 
-		double x, y, p;
-		int pos;
+		//double x, y, p;
+		//int pos;
+		double x, y;
 		LayoutMachine machine1, machine2;
 
 		g2D.setColor(Color.BLACK);
 		// Updating the position of all machines
 		for (int i = 0; i < machines.size(); i++) {
-			x = solution[((i * 3) + 0)];
-			y = solution[((i * 3) + 1)];
-			p = solution[((i * 3) + 2)];
-			pos = convertPosition(p);
+			x = solution[((i * 2) + 0)];
+			y = solution[((i * 2) + 1)];
+			//p = solution[((i * 3) + 2)];
+			//pos = convertPosition(p);
 			machine1 = machines.get(i);
-			machine1.updatePosition(x, y, pos);
+			//machine1.updatePosition(x, y, pos);
+			machine1.updatePosition(x, y);
 			
 			drawRectangle(g2D,
 					(float) Math.round(((machine1.getX1() * scale) + xx)),
@@ -140,7 +144,7 @@ class GCanvas extends Canvas {
 		
 		g2D.setColor(Color.RED);
 		// Creating the links
-		int posSaida, posEntrada;
+		//int posSaida, posEntrada;
 		for (LayoutLink machineLink : machinesLinks) {
 			x1 = 0.0;
 			x2 = 0.0;
@@ -206,6 +210,7 @@ class GCanvas extends Canvas {
 		}
 	}
 
+	/*
 	private int convertPosition(double position) {
 		if (position <= 0.25)
 			return 0;
@@ -215,6 +220,7 @@ class GCanvas extends Canvas {
 			return 2;
 		return 3;
 	}
+	*/
 
 	public void drawArc(Graphics2D g2D, int x1, int y1, int x2, int y2, int sd, int rd, int cl) {
 		Arc2D.Float arc1 = new Arc2D.Float(x1, y1, x2, y2, sd, rd, cl);

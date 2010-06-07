@@ -14,14 +14,14 @@ import br.upe.dsc.de.problem.IProblem;
 import br.upe.dsc.de.problem.LayoutLink;
 import br.upe.dsc.de.problem.LayoutMachine;
 
-class GCanvas extends Canvas {
+class GCanvasUnSortedWithPosition extends Canvas {
 	private static final long serialVersionUID = 1L;
 	private double[] solution;
 	private ArrayList<LayoutMachine> machines;
 	ArrayList<LayoutLink> machinesLinks;
 	private IProblem problem;
 
-	public GCanvas(IProblem problem) {
+	public GCanvasUnSortedWithPosition(IProblem problem) {
 		this.problem = problem;
 		/*
 		// Creating machines
@@ -48,7 +48,7 @@ class GCanvas extends Canvas {
 		*/
 		// Creating machines
 		machines = new ArrayList<LayoutMachine>();
-		machines.add(new LayoutMachine("A1", 10, 20));  // A1
+		machines.add(new LayoutMachine("A1", 10, 10));  // A1
 		machines.add(new LayoutMachine("B1", 10, 10));  // B1
 		machines.add(new LayoutMachine("B2", 10, 10));  // B2
 		machines.add(new LayoutMachine("C1", 10, 10));  // C1

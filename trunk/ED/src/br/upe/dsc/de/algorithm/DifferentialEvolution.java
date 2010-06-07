@@ -92,6 +92,7 @@ public class DifferentialEvolution {
 				}
 				*/
 			}
+			//break;
 		}
 
 		System.out.println("Best solution: " + bestSolutionFitness);
