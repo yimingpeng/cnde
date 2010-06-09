@@ -156,28 +156,16 @@ public class DifferentialEvolution {
 			experimentalIndividual = mutation(i);
 			recombinationIndividualSolution = crossover(population[i], experimentalIndividual);
 
-			// If the individual created in the crossover operation breaks some
-			// constraint, we are going to create a new individual.
-//			if (problem.verifyConstraints(recombinationIndividualSolution)) {
-				recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
-				if (problem.compareFitness(population[i].getSolutionFitness(), recombinationIndividualSolutionFitness)) {
-					population[i].updateSolution(recombinationIndividualSolution.clone(),
-						recombinationIndividualSolutionFitness);
-					allFitness[i] = recombinationIndividualSolutionFitness;
-					calculateBestSolution(population[i]);
-				}
-//			}
-			// else createIndividual(i);
+			recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
+			if (problem.compareFitness(population[i].getSolutionFitness(), recombinationIndividualSolutionFitness)) {
+				population[i].updateSolution(recombinationIndividualSolution.clone(),
+					recombinationIndividualSolutionFitness);
+				allFitness[i] = recombinationIndividualSolutionFitness;
+				calculateBestSolution(population[i]);
+			}
 		}
 
 		populationObserver.update(population);
-
-		// Controls the velocity which the particles moves on the screen
-		/*
-		 * try { if (delayExecution) { chartLayout.createChart(bestSolution);
-		 * Thread.sleep(150); } } catch (InterruptedException e) {
-		 * e.printStackTrace(); }
-		 */
 	}
 
 	// Performs the mutation phase of the algorithm creating the
