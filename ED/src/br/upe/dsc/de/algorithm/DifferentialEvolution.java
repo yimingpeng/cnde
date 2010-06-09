@@ -158,7 +158,7 @@ public class DifferentialEvolution {
 
 			// If the individual created in the crossover operation breaks some
 			// constraint, we are going to create a new individual.
-			if (problem.verifyConstraints(recombinationIndividualSolution)) {
+//			if (problem.verifyConstraints(recombinationIndividualSolution)) {
 				recombinationIndividualSolutionFitness = problem.getFitness(recombinationIndividualSolution);
 				if (problem.compareFitness(population[i].getSolutionFitness(), recombinationIndividualSolutionFitness)) {
 					population[i].updateSolution(recombinationIndividualSolution.clone(),
@@ -166,7 +166,7 @@ public class DifferentialEvolution {
 					allFitness[i] = recombinationIndividualSolutionFitness;
 					calculateBestSolution(population[i]);
 				}
-			}
+//			}
 			// else createIndividual(i);
 		}
 
@@ -353,7 +353,7 @@ public class DifferentialEvolution {
         double[] position = new double[dimensions];
         Random random = new Random(System.nanoTime());
         
-        do {
+       // do {
                 for (int i = 0; i < dimensions; i++) {
                         double rightBound, leftBound, value = random.nextDouble();
                         rightBound = problem.getUpperLimit(i);
@@ -368,7 +368,7 @@ public class DifferentialEvolution {
                                 position[i] = leftBound;
                         }
                 }
-        } while (!problem.verifyConstraints(position));
+       // } while (!problem.verifyConstraints(position));
         return position;
 	}
 

@@ -212,7 +212,50 @@ public class LayoutProblem implements IProblem {
 			value = (w*w) + (h*h);
 			result += (value * value);
 		}
-		return Math.sqrt(result);
+		
+		
+		for (int i = 0; i < qtyMachines; i++) {
+			machine1 = machines.get(i);
+			
+			if (machine1.getX1() < leftBounds[ ((i*3)+0) ] ||
+			machine1.getY1() < leftBounds[ ((i*3)+1) ]||
+			machine1.getX2() > rightBounds[ ((i*3)+0) ]||
+			machine1.getY2() > rightBounds[ ((i*3)+1) ]){ 
+				
+				result +=1000000;
+				
+			}
+			
+			for (int j = (i + 1); j < qtyMachines; j++) {
+				machine2 = machines.get(j);
+				if (!(machine1.getX1() > machine2.getX2() || machine1.getX2() < machine2.getX1() ||
+					machine1.getY1() > machine2.getY2() || machine1.getY2() < machine2.getY1())) {
+					
+					double x_ =  Math.abs(machine2.getX2() - machine1.getX1());
+					double y_ = Math.abs(machine2.getY2() - machine1.getY1());
+					
+					double area = x_ * y_;
+					
+					result += Math.pow(area, 7);
+				}
+			}
+			
+			for (LayoutMapRestriction mapRestriction : mapRestrictions) {
+				if (!(machine1.getX1() > mapRestriction.getX2() || machine1.getX2() < mapRestriction.getX1() ||
+						machine1.getY1() > mapRestriction.getY2() || machine1.getY2() < mapRestriction.getY1())) {
+					
+					double x_ =  Math.abs(mapRestriction.getX2() - machine1.getX1());
+					double y_ = Math.abs(mapRestriction.getY2() - machine1.getY1());
+					
+					double area = x_ * y_;
+					
+					result += Math.pow(area, 7);
+				}
+			}
+		}	
+		
+		
+		return result;
 	}
 	
 	public boolean verifyConstraints(double... variables) {
@@ -238,6 +281,8 @@ public class LayoutProblem implements IProblem {
 			if (machine1.getY2() > rightBounds[ ((i*3)+1) ]) return false;
 		}
 		
+		//x1 e y1 representam o canto inferior esquerdo do retângulo
+		//x2 e y2 representam o canto superior direito do retângulo
 		// Verify if exists a machine under other machine
 		for (int i = 0; i < qtyMachines; i++) {
 			machine1 = machines.get(i);
@@ -245,6 +290,14 @@ public class LayoutProblem implements IProblem {
 				machine2 = machines.get(j);
 				if (!(machine1.getX1() > machine2.getX2() || machine1.getX2() < machine2.getX1() ||
 					machine1.getY1() > machine2.getY2() || machine1.getY2() < machine2.getY1())) {
+					
+					double x_ =  Math.abs(machine2.getX2() - machine1.getX1());
+					double y_ = Math.abs(machine2.getY2() - machine1.getY1());
+					
+					double area = x_ * y_;
+					
+					area = Math.pow(area, 5);
+					
 					return false;
 				}
 			}
