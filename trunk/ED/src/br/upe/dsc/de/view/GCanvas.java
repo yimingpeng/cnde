@@ -47,10 +47,10 @@ class GCanvas extends Canvas {
 		mapRestrictions = new ArrayList<LayoutMapRestriction>();
 		mapRestrictions.add(new LayoutMapRestriction(0, 0, 20, 10));
 		mapRestrictions.add(new LayoutMapRestriction(0, 0, 10, 20));
-		mapRestrictions.add(new LayoutMapRestriction(50, 0, 20, 10));
+		mapRestrictions.add(new LayoutMapRestriction(40, 30, 20, 10));
 		mapRestrictions.add(new LayoutMapRestriction(60, 0, 10, 20));
 		mapRestrictions.add(new LayoutMapRestriction(0, 60, 20, 10));
-		mapRestrictions.add(new LayoutMapRestriction(0, 50, 10, 20));
+		mapRestrictions.add(new LayoutMapRestriction(30, 50, 10, 20));
 		mapRestrictions.add(new LayoutMapRestriction(50, 60, 20, 10));
 		mapRestrictions.add(new LayoutMapRestriction(60, 50, 10, 20));
 		//mapRestrictions.add(new LayoutMapRestriction(30, 30, 10, 10));

@@ -47,8 +47,4 @@ public class Problem2 implements IProblem {
             double fator1 = (dimension[1] - dimension[0] * dimension[0]);
             return 100 * fator1 * fator1 + (1 - dimension[0]) * (1 - dimension[0]);
     }
-    
-	public boolean verifyConstraints(double... variables) {
-		return true;
-	}
 }
