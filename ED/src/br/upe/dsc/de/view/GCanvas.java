@@ -1,7 +1,9 @@
 package br.upe.dsc.de.view;
 
+import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -70,6 +72,8 @@ class GCanvas extends Canvas {
 		//super.paint(g);
 		Graphics2D g2D = (Graphics2D) g; // cast to 2D
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2D.setStroke(new BasicStroke(2f));
+		g2D.setFont(new Font("Arial Bold", Font.BOLD, 12));
 		// g2D.setBackground(Color.white);
 		// Stroke s = new BasicStroke(1);
 		// g2D.setStroke(s);
