@@ -8,7 +8,7 @@ public class LayoutMachine {
 	
 	String name;
 	double width, height;
-	double x1, y1, x2, y2;
+	double x1, y1, x2, y2, cx, cy;
 	int position;
 	
 	public LayoutMachine(String name, double width, double height) {
@@ -45,6 +45,22 @@ public class LayoutMachine {
 		return y2;
 	}
 	
+	public double getHalfWidth() {
+		return cx;
+	}
+	
+	public double getHalfHeight() {
+		return cy;
+	}
+	
+	public double getCenterX() {
+		return cx + x1;
+	}
+	
+	public double getCenterY() {
+		return cy + y1;
+	}
+	
 	public int getPosition() {
 		return position;
 	}
@@ -63,6 +79,8 @@ public class LayoutMachine {
 			x2 += height;
 			y2 += width;
 		}
+		cx = ((x2 - x1) / 2.0);
+		cy = ((y2 - y1) / 2.0);
 	}
 	
 	public void updatePosition(double x, double y) {
@@ -70,5 +88,7 @@ public class LayoutMachine {
 		y1 = y;
 		x2 = x1 + width;
 		y2 = y1 + height;
+		cx = ((x2 - x1) / 2.0);
+		cy = ((y2 - y1) / 2.0);
 	}
 }

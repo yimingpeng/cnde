@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * +------+    +---+
  * 
  */
-public class LayoutProblem implements IProblem {
+public class LayoutProblemImproved implements IProblem {
 	int dimensions;
 	double[] leftBounds;
 	double[] rightBounds;
@@ -28,7 +28,7 @@ public class LayoutProblem implements IProblem {
 	ArrayList<LayoutLink> machinesLinks;
 	ArrayList<LayoutMapRestriction> mapRestrictions;
 	
-	public LayoutProblem() {
+	public LayoutProblemImproved() {
 		super();
 		qtyMachines = 6;
 		
@@ -142,14 +142,12 @@ public class LayoutProblem implements IProblem {
 	 */
 	public double getFitness(double... variables) {
 		double result = 0;
-		double x1, x2, y1, y2, w, h, value;
-		int posSaida, posEntrada;
+		double x, y, p;
+		int pos;
 		LayoutMachine machine1, machine2;
 		
 		// Updating the position of all machines
 		for (int i = 0; i < qtyMachines; i++) {
-			double x, y, p;
-			int pos;
 			x = variables[ ((i*3)+0) ];
 			y = variables[ ((i*3)+1) ];
 			p = variables[ ((i*3)+2) ];
@@ -158,67 +156,8 @@ public class LayoutProblem implements IProblem {
 			machine1.updatePosition(x, y, pos);
 		}
 		
-		for (int i = 0; i < qtyMachines; i++) {
-			machine1 = machines.get(i);
-			
-			// Verify if the machines can be into the area
-			if (machine1.getX1() < leftBounds[ ((i*3)+0) ]) {
-				value = machine1.getX1() - leftBounds[ ((i*3)+0) ];
-				result += value * value;
-			}
-			if (machine1.getY1() < leftBounds[ ((i*3)+1) ]) {
-				value = machine1.getY1() - leftBounds[ ((i*3)+1) ];
-				result += value * value;
-			}
-			if (machine1.getX2() > rightBounds[ ((i*3)+0) ]) {
-				value = machine1.getX2() - rightBounds[ ((i*3)+0) ];
-				result += value * value;
-			}
-			if (machine1.getY2() > rightBounds[ ((i*3)+1) ]) {
-				value = machine1.getY2() - rightBounds[ ((i*3)+1) ];
-				result += value * value;
-			}
-			
-			// Verify if exists a machine under other machine
-			for (int j = (i + 1); j < qtyMachines; j++) {
-				machine2 = machines.get(j);
-				if (!(machine1.getX1() > machine2.getX2() || machine1.getX2() < machine2.getX1() ||
-					machine1.getY1() > machine2.getY2() || machine1.getY2() < machine2.getY1())) {
-					
-					// Calculating the X difference
-					w = machine1.getHalfWidth() + machine2.getHalfWidth();
-					value = w - Math.abs(machine1.getCenterX() - machine2.getCenterX());
-					value = 2.0 * value;
-					result += Math.sqrt(value * value * value * value);
-					
-					// Calculating the Y difference
-					h = machine1.getHalfHeight() + machine2.getHalfHeight();
-					value = h - Math.abs(machine1.getCenterY() - machine2.getCenterY());
-					value = 2.0 * value;
-					result += Math.sqrt(value * value * value * value);
-				}
-			}
-			
-			// Verify if exists a machine under restriction of map
-			for (LayoutMapRestriction mapRestriction : mapRestrictions) {
-				if (!(machine1.getX1() > mapRestriction.getX2() || machine1.getX2() < mapRestriction.getX1() ||
-					machine1.getY1() > mapRestriction.getY2() || machine1.getY2() < mapRestriction.getY1())) {
-					
-					// Calculating the X difference
-					w = machine1.getHalfWidth() + mapRestriction.getHalfWidth();
-					value = w - Math.abs(machine1.getCenterX() - mapRestriction.getCenterX());
-					value = 2.0 * value;
-					result += Math.sqrt(value * value);
-					
-					// Calculating the Y difference
-					h = machine1.getHalfHeight() + mapRestriction.getHalfHeight();
-					value = h - Math.abs(machine1.getCenterY() - mapRestriction.getCenterY());
-					value = 2.0 * value;
-					result += Math.sqrt(value * value);
-				}
-			}
-		}
-		
+		double x1, x2, y1, y2, w, h;
+		int posSaida, posEntrada;
 		for (LayoutLink machineLink : machinesLinks) {
 			x1 = 0.0;
 			x2 = 0.0;
@@ -230,48 +169,107 @@ public class LayoutProblem implements IProblem {
 			// Get the current position of the machines
 			posSaida = (machine1.getPosition() + machineLink.getSourceSide()) % 4;
 			posEntrada = (machine2.getPosition() + machineLink.getDestSide()) % 4;
+			double value;
 			
 			switch (posSaida) {
 				case LayoutMachine.TOP :
-					x1 = machine1.getCenterX();
+					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
 					y1 = machine1.getY1();
 					break;
 				case LayoutMachine.BOTTOM :
-					x1 = machine1.getCenterX();
+					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
 					y1 = machine1.getY2();
 					break;
 				case LayoutMachine.LEFT :
 					x1 = machine1.getX1();
-					y1 = machine1.getCenterY();
+					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
 					break;
 				case LayoutMachine.RIGHT :
 					x1 = machine1.getX2();
-					y1 = machine1.getCenterY();
+					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
 					break;
 			}
 			switch (posEntrada) {
 				case LayoutMachine.TOP :
-					x2 = machine2.getCenterX();
+					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
 					y2 = machine2.getY1();
 					break;
 				case LayoutMachine.BOTTOM :
-					x2 = machine2.getCenterX();
+					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
 					y2 = machine2.getY2();
 					break;
 				case LayoutMachine.LEFT :
 					x2 = machine2.getX1();
-					y2 = machine2.getCenterY();
+					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 				case LayoutMachine.RIGHT :
 					x2 = machine2.getX2();
-					y2 = machine2.getCenterY();
+					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
 					break;
 			}
 			w = Math.abs(x2 - x1);
 			h = Math.abs(y2 - y1);
 			value = (w*w) + (h*h);
-			result += Math.sqrt(value * value);
+			result += (value * value);
 		}
+		
+		
+		for (int i = 0; i < qtyMachines; i++) {
+			machine1 = machines.get(i);
+			
+			double x_ = 0;
+			double y_ = 0;
+			double area;
+			
+			if (machine1.getX1() < leftBounds[ ((i*3)+0) ] ) {
+				x_ = Math.abs(machine1.getX1() - leftBounds[ ((i*3)+0) ]);
+				y_ = Math.abs(machine1.getY2() - machine1.getY1());
+			}
+			else if (machine1.getY1() < leftBounds[ ((i*3)+1) ] ) {
+				x_ = Math.abs(machine1.getX2() - machine1.getX1());
+				y_ = Math.abs(machine1.getY1() - leftBounds[ ((i*3)+1) ]);
+			}
+			else if (machine1.getX2() > rightBounds[ ((i*3)+0) ] ) {
+				x_ = Math.abs(machine1.getX2() - rightBounds[ ((i*3)+0) ]);
+				y_ = Math.abs(machine1.getY2() - machine1.getY1());
+			}
+			else if (machine1.getY2() > rightBounds[ ((i*3)+1) ]) { 
+				x_ = Math.abs(machine1.getX2() - machine1.getX1());
+				y_ = Math.abs(machine1.getY2() - rightBounds[ ((i*3)+1) ]);
+			}
+			
+			area = x_ * y_;
+			result += Math.pow(area, 7);
+			
+			for (int j = (i + 1); j < qtyMachines; j++) {
+				machine2 = machines.get(j);
+				if (!(machine1.getX1() > machine2.getX2() || machine1.getX2() < machine2.getX1() ||
+					machine1.getY1() > machine2.getY2() || machine1.getY2() < machine2.getY1())) {
+					
+					x_ =  Math.abs(machine2.getX2() - machine1.getX1());
+					y_ = Math.abs(machine2.getY2() - machine1.getY1());
+					
+					area = x_ * y_;
+					
+					result += Math.pow(area, 7);
+				}
+			}
+			
+			for (LayoutMapRestriction mapRestriction : mapRestrictions) {
+				if (!(machine1.getX1() > mapRestriction.getX2() || machine1.getX2() < mapRestriction.getX1() ||
+						machine1.getY1() > mapRestriction.getY2() || machine1.getY2() < mapRestriction.getY1())) {
+					
+					x_ =  Math.abs(mapRestriction.getX2() - machine1.getX1());
+					y_ = Math.abs(mapRestriction.getY2() - machine1.getY1());
+					
+					area = x_ * y_;
+					
+					result += Math.pow(area, 7);
+				}
+			}
+		}	
+		
+		
 		return result;
 	}
 	
