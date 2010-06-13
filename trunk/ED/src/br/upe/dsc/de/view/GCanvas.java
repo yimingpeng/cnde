@@ -88,7 +88,7 @@ class GCanvas extends Canvas {
 		y2 = problem.getUpperLimit(1);
 		w = Math.abs(x2 - x1);
 		h = Math.abs(y2 - y1);
-
+		
 		// Calculating the positions and sizes
 		widthMax = getWidth();
 		heightMax = getHeight();
@@ -104,10 +104,10 @@ class GCanvas extends Canvas {
 		scale = width / w;
 		xx = (int) Math.round(margin / 2.0);
 		yy = (int) Math.round(margin / 2.0);
-
+		
 		g2D.setColor(Color.WHITE);
 		g2D.fillRect(xx, yy, width, height);
-
+		
 		g2D.setColor(Color.LIGHT_GRAY);
 		g2D.drawRect(xx, yy, (int) Math.ceil(w * scale), (int) Math.ceil(h * scale));
 
@@ -137,7 +137,7 @@ class GCanvas extends Canvas {
 					(float) Math.round(((machine1.getY2() - machine1.getY1()) * scale))
 			);
 			
-			g2D.drawString(machine1.getName(), Math.round(((((machine1.getX2() - machine1.getX1())/2.0) + machine1.getX1()) * scale) + xx - 5), Math.round(((((machine1.getY2() - machine1.getY1())/2.0) + machine1.getY1()) * scale) + yy + 10));
+			g2D.drawString(machine1.getName(), Math.round((machine1.getCenterX() * scale) + xx - 5), Math.round((machine1.getCenterY() * scale) + yy + 10));
 		}
 		
 		g2D.setColor(Color.RED);
@@ -157,38 +157,38 @@ class GCanvas extends Canvas {
 			
 			switch (posSaida) {
 				case LayoutMachine.TOP :
-					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
+					x1 = machine1.getCenterX();
 					y1 = machine1.getY1();
 					break;
 				case LayoutMachine.BOTTOM :
-					x1 = ((machine1.getX2() - machine1.getX1()) / 2.0) + machine1.getX1();
+					x1 = machine1.getCenterX();
 					y1 = machine1.getY2();
 					break;
 				case LayoutMachine.LEFT :
 					x1 = machine1.getX1();
-					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
+					y1 = machine1.getCenterY();
 					break;
 				case LayoutMachine.RIGHT :
 					x1 = machine1.getX2();
-					y1 = ((machine1.getY2() - machine1.getY1()) / 2.0) + machine1.getY1();
+					y1 = machine1.getCenterY();
 					break;
 			}
 			switch (posEntrada) {
 				case LayoutMachine.TOP :
-					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
+					x2 = machine2.getCenterX();
 					y2 = machine2.getY1();
 					break;
 				case LayoutMachine.BOTTOM :
-					x2 = ((machine2.getX2() - machine2.getX1()) / 2.0) + machine2.getX1();
+					x2 = machine2.getCenterX();
 					y2 = machine2.getY2();
 					break;
 				case LayoutMachine.LEFT :
 					x2 = machine2.getX1();
-					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
+					y2 = machine2.getCenterY();
 					break;
 				case LayoutMachine.RIGHT :
 					x2 = machine2.getX2();
-					y2 = ((machine2.getY2() - machine2.getY1()) / 2.0) + machine2.getY1();
+					y2 = machine2.getCenterY();
 					break;
 			}
 			g2D.drawLine(
