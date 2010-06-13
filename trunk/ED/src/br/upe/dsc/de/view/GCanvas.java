@@ -137,7 +137,8 @@ class GCanvas extends Canvas {
 					(float) Math.round(((machine1.getY2() - machine1.getY1()) * scale))
 			);
 			
-			g2D.drawString(machine1.getName(), Math.round((machine1.getCenterX() * scale) + xx - 5), Math.round((machine1.getCenterY() * scale) + yy + 10));
+			g2D.setFont(new Font("Arial", 0, 20));
+			g2D.drawString(machine1.getName(), Math.round((machine1.getCenterX() * scale) + xx - 10), Math.round((machine1.getCenterY() * scale) + yy + 10));
 		}
 		
 		g2D.setColor(Color.RED);
